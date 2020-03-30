@@ -6,9 +6,10 @@ import pprint
 from pygame.locals import *
 
 WIDTH = 1000
-HEIGHT = 600
+HEIGHT = 700
 SCALE_FACTOR = 1 #2.5 #for imagees that are too big
 GREEN = (0, 255, 0)
+GREY = (150, 150, 150)
 TRANSPARENT = (1, 0, 0)
 MASK_POS_X = 0.35 #relative to WIDTH
 MASK_POS_Y = 0.4 #relative to HEIGHT
@@ -89,10 +90,12 @@ class Decrees():
 
         self.valid_decrees = [[['' for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
 
-        pprint.pprint(self.decrees)
-        pprint.pprint(self.valid_decrees)
+        self.factors = [[[self.get_factor() for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
+
+        pprint.pprint(self.factors)
 
     def print_decs(self):
+        pprint.pprint(self.decrees)
         print(self.w1_decs)
 
     def make_decreto(self, w_positions):
@@ -126,7 +129,16 @@ class Decrees():
                         valid_decs.append(self.valid_decrees[i][j][k])
         return valid_decs
 
-    def calc_decree_factor(self): 
+    def get_valid_indeces(self):
+        valid_indeces = []
+        for i in range(len(self.valid_decrees)):
+            for j in range(len(self.valid_decrees[i])):
+                for k in range(len(self.valid_decrees[j])):
+                    if self.valid_decrees[i][j][k]:
+                        valid_indeces.append((i,j,k))
+        return valid_indeces
+
+    def get_factor(self): 
         standard_factor = 2 + random.randint(0,10)*0.1
 
         max_power = 10
@@ -138,16 +150,36 @@ class Decrees():
         rand_good_bad = random.randint(1, max_good_bad)
         rand_power = random.randint(1, max_power)
         factor_good_bad = -1 if (rand_good_bad > good_bad_thresh) else  1
-        factor_power = fix_power // (random_power**exp_power)
+        factor_power = fix_power // (rand_power**exp_power)
 
         factor = factor_good_bad * factor_power
 
         return factor
 #
 #
-#class People():
+class People():
+    """
+    """
+    def __init__(self, decrees):
+        self.sick_ppl = 1
+        self.decrees = decrees
+
+        #factor = sum((self.get_factors))
+    def get_sick_people(self):
+        return self.sick_ppl
+
+    def update_sick(self):
+        #dec_factor = self.decrees.get_factor
+        #valid_dec_indeces = self.decrees.get_valid_indeces()
+        valid_factors = []
+        for i, j, k in self.decrees.get_valid_indeces():
+            valid_factors.append(self.decrees.factors[i][j][k])
+
+        standard_factor = 1
+        decrees_factor = sum(valid_factors)
+        self.sick_ppl = self.sick_ppl * (decrees_factor + standard_factor)
+        print(f'sick people: {self.sick_ppl} with factor: {decrees_factor}')
 #
-#    def calc_sick_people(self):
 #        sum_factors = sum(decree.get_factor()) for active_decrees
 #        gente_giorno_dopo = gente_giorno_prima * (sum_factors + standard_factor)
 
@@ -289,16 +321,18 @@ class Game:
         self.sprites.add(self.w3, layer = 1)
 
         self.decrees = Decrees()
+        self.people = People(self.decrees)
         #decrees.print_decs()
 
         self.title_font = pygame.font.SysFont('Comic Sans MS', 30, True)
         self.decrees_font = pygame.font.SysFont('Comic Sans MS', 20)
         textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
         self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
+        self.day = 1
         
     def events(self, events):
         """
-        Standard even loop.
+        Standard event loop.
         """
 
         for event in events:
@@ -322,6 +356,8 @@ class Game:
                     self.update_decrees_text()
                 elif event.key == K_p:
                     self.decrees.print_valid_decrees()
+                elif event.key == K_RETURN:
+                    self.next_day()
 
 
     def render(self):
@@ -330,20 +366,39 @@ class Game:
         pass
 
     def update_decrees_text(self):
+        """
+        Update and blit the text showing the current valid decrees.
+        """
         valid_decrees = 'Decreti\n'
         #valid_decrees += self.decrees.get_valid_decrees_str()
 
-        textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
+        textsurface = self.title_font.render('Decreti', False, GREY)
         text_x, text_y = WIDTH*0.6, HEIGHT*0.1
         self.screen.blit(textsurface,(text_x, text_y))
 
         word_width, word_height = textsurface.get_size()
 
         for dec in self.decrees.get_valid_decrees():
-            dec_textsurface = self.decrees_font.render(dec, False, (150, 150, 150))
+            dec_textsurface = self.decrees_font.render(dec, False, GREY)
             text_y += word_height
             self.screen.blit(dec_textsurface,(text_x, text_y))
 
+
+        sick_ppl = self.people.get_sick_people()
+        ppl_textsurface = self.title_font.render(f'Malati: {sick_ppl}', False, GREY)
+        self.screen.blit(ppl_textsurface,(WIDTH*0.1, HEIGHT*0.9))
+
+        day = self.get_day()
+        day_textsurface = self.title_font.render(f'Giorno: {day}', False, GREY)
+        self.screen.blit(day_textsurface,(WIDTH*0.06, HEIGHT*0.06))
+
+    def next_day(self):
+        self.day += 1
+        #self.people.update_sick(self.decrees)
+        self.people.update_sick()
+
+    def get_day(self):
+        return self.day
 
     def mainloop(self):
         """
