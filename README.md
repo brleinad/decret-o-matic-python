@@ -1,4 +1,4 @@
-[[cc-by-nc-nd-shield]][cc-by-nc-nd]
+[![CC BY 4.0][cc-by-nc-nd-shield]][cc-by-nc-nd]
 
 This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 2.0 Generic License][cc-by-nc-nd].
 
