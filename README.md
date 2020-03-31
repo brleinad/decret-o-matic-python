@@ -1,14 +1,13 @@
-Shield: [![CC BY NC ND 4.0][cc-by-shield]][cc-by]
+[![CC BY NC ND 4.0][cc-by-nc-nd-shield]][cc-by-nc-nd]
 
-This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 2.0 Generic License][cc-by].
+This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 2.0 Generic License][cc-by-nc-cd].
 
 [![CC BY NC ND 4.0][cc-by-image]][cc-by]
 
-[cc-by]: http://creativecommons.org/licenses/by/4.0/
-[cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
-[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
+[cc-by-nc-nd]: http://creativecommons.org/licenses/by-nc-nd/2.0/
+[cc-by-nc-nd-image]: https://i.creativecommons.org/l/by-nc-nd/2.0/88x31.png
+[cc-by-nc-nd-shield]: https://i.creativecommons.org/l/by-nc-nd/2.0/80x15.png
 
-This is a game that in no way resembles the COVID-19 pandemic.
 
 Make sure you have Python 3.8.
 To try it for now clone and then do:
