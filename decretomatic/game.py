@@ -15,10 +15,13 @@ MASK_POS_Y = 0.4 #relative to HEIGHT
 
 #TODOs: 
 #mouse, 
+#buttons,
 #deleting decrees, 
-#max 3 decree actions per day
-#game over on the 14th day
-#new game option
+#max 3 decree actions per day,
+#game over on the 14th day, LIMIT=500000
+#new game option,
+#Change fonts
+#Use sprite sheet at the end of rotate
 
 class People():
     """
