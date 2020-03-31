@@ -1,8 +1,7 @@
-[![CC BY NC ND 4.0][cc-by-nc-nd-shield]][cc-by-nc-nd]
+[[cc-by-nc-nd-shield]][cc-by-nc-nd]
 
-This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 2.0 Generic License][cc-by-nc-cd].
+This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivs 2.0 Generic License][cc-by-nc-nd].
 
-[![CC BY NC ND 4.0][cc-by-image]][cc-by]
 
 [cc-by-nc-nd]: http://creativecommons.org/licenses/by-nc-nd/2.0/
 [cc-by-nc-nd-image]: https://i.creativecommons.org/l/by-nc-nd/2.0/88x31.png
