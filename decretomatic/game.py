@@ -1,4 +1,5 @@
 import time
+import random
 import pygame
 from pygame.locals import *
 
@@ -11,6 +12,13 @@ GREEN = (0, 255, 0)
 GREY = (150, 150, 150)
 MASK_POS_X = 0.35 #relative to WIDTH
 MASK_POS_Y = 0.4 #relative to HEIGHT
+
+#TODOs: 
+#mouse, 
+#deleting decrees, 
+#max 3 decree actions per day
+#game over on the 14th day
+#new game option
 
 class People():
     """
@@ -30,9 +38,9 @@ class People():
         for i, j, k in self.decrees.get_valid_indeces():
             valid_factors.append(self.decrees.factors[i][j][k])
 
-        standard_factor = 1
+        standard_factor = 2.0 + float(random.randint(0,10))*0.1
         decrees_factor = sum(valid_factors)
-        self.sick_ppl = self.sick_ppl * (decrees_factor + standard_factor)
+        self.sick_ppl = max(0, int(self.sick_ppl * (decrees_factor + standard_factor)))
         print(f'sick people: {self.sick_ppl} with factor: {decrees_factor}')
 #
 #        sum_factors = sum(decree.get_factor()) for active_decrees

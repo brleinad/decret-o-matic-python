@@ -83,19 +83,18 @@ class Decrees():
         return valid_indeces
 
     def get_factor(self): 
-        standard_factor = 2 + random.randint(0,10)*0.1
 
-        max_power = 10
-        fix_power = 3
+        max_power = 10.0
+        fix_power = 3.0
         exp_power = 1.2
-        max_good_bad = 10
-        good_bad_thresh = 6
+        max_good_bad = 10.0
+        good_bad_thresh = 6.0
 
-        rand_good_bad = random.randint(1, max_good_bad)
-        rand_power = random.randint(1, max_power)
-        factor_good_bad = -1 if (rand_good_bad > good_bad_thresh) else  1
-        factor_power = fix_power // (rand_power**exp_power)
+        rand_good_bad = float(random.randint(1, max_good_bad))
+        rand_power = float(random.randint(1, max_power))
+        factor_good_bad = -1.0 if (rand_good_bad > good_bad_thresh) else  1.0
+        factor_power = float(fix_power / (rand_power**exp_power))
 
-        factor = factor_good_bad * factor_power
+        factor = float(factor_good_bad * factor_power)
 
         return factor
