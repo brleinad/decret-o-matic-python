@@ -24,12 +24,14 @@ class People():
     """
     """
     def __init__(self, decrees):
-        self.sick_ppl = 1
-        self.decrees = decrees
-
+	    self.sick_ppl = 1
+	    self.new_sick_ppl =	0
+	    self.decrees = decrees
         #factor = sum((self.get_factors))
     def get_sick_people(self):
         return self.sick_ppl
+    def get_new_sick_people(self):
+        return self.new_sick_ppl
 
     def update_sick(self):
         #dec_factor = self.decrees.get_factor
@@ -40,7 +42,8 @@ class People():
 
         standard_factor = 2.0 + float(random.randint(0,10))*0.1
         decrees_factor = sum(valid_factors)
-        self.sick_ppl = max(0, int(self.sick_ppl * (decrees_factor + standard_factor)))
+        self.new_sick_ppl = int(self.sick_ppl * (max(1.0, (decrees_factor + standard_factor))-1))
+        self.sick_ppl += self.new_sick_ppl
         print(f'sick people: {self.sick_ppl} with factor: {decrees_factor}')
 #
 #        sum_factors = sum(decree.get_factor()) for active_decrees
@@ -71,7 +74,7 @@ class Game:
         self.day = 1
         self.days = [self.day,]
         self.sick_ppls = [1,]
-
+        self.new_sick_ppls = [0,]
         print(pygame.display.Info())
 
         self.mask = Mask((WIDTH*MASK_POS_X, HEIGHT*MASK_POS_Y))
@@ -168,7 +171,8 @@ class Game:
             self.screen.blit(dec_textsurface,(text_x, text_y))
 
         sick_ppl = self.people.get_sick_people()
-        ppl_textsurface = self.title_font.render(f'Malati: {sick_ppl}', False, GREY)
+        new_sick_ppl = self.people.get_new_sick_people()
+        ppl_textsurface = self.title_font.render(f'Contagi: {sick_ppl} (+{new_sick_ppl})', False, GREY)
         self.screen.blit(ppl_textsurface,(WIDTH*0.02, HEIGHT*0.6))
 
         day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, GREY)

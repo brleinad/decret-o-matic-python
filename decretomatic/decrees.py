@@ -85,10 +85,10 @@ class Decrees():
     def get_factor(self): 
 
         max_power = 10.0
-        fix_power = 3.0
-        exp_power = 1.2
+        fix_power = 4.0
+        exp_power = 1.3
         max_good_bad = 10.0
-        good_bad_thresh = 6.0
+        good_bad_thresh = 4.0
 
         rand_good_bad = float(random.randint(1, max_good_bad))
         rand_power = float(random.randint(1, max_power))
