@@ -29,7 +29,7 @@ class People():
         self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
         #factor = sum((self.get_factors))
     def get_sick_people(self):
-        return self.sick_ppl
+        return self.sick_ppl + self.t_new_sick_ppl
     def get_new_sick_people(self):
         return self.new_sick_ppl
 
@@ -45,7 +45,7 @@ class People():
         self.new_sick_ppl=0
         print(f'sick people: {self.sick_ppl + self.t_new_sick_ppl} with factor: {decrees_factor}')
 		
-    def count_up_sick(self):
+    def update(self):
         if self.t_new_sick_ppl > 0:
     	    self.sick_ppl += max(self.t_new_sick_ppl//10,1)
     	    self.new_sick_ppl += max(self.t_new_sick_ppl//10,1)
@@ -195,7 +195,7 @@ class Game():
         self.screen.blit(self.background, (0, 0))
         self.sprites.draw(self.screen)
         self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
-        self.screen.blit(self.people.ppl_textsurface,(WIDTH*0.02, HEIGHT*0.6))
+        self.screen.blit(self.people.ppl_textsurface,(WIDTH*0.02, HEIGHT*0.65))
         self.decrees.update_decrees_text()
         self.screen.blit(self.day_textsurface,(WIDTH*0.06, HEIGHT*0.06))
 
@@ -205,9 +205,9 @@ class Game():
         """
         self.day += 1
         self.days.append(self.day)
-        self.sick_ppls.append(self.people.get_sick_people())
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
+        self.sick_ppls.append(self.people.get_sick_people())
         self.graph.update()
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
 
@@ -230,7 +230,7 @@ class Game():
             events = pygame.event.get()
             self.events(events)
             self.sprites.update()
-            self.people.count_up_sick()
+            self.people.update()
             self.render()
             pygame.display.flip()
 
