@@ -52,11 +52,20 @@ class Wheel(BaseSprite):
     Generic class to represent the three wheels.
     """
     layer = 1
-    def __init__(self, image, position = (0, 0)):
+    def __init__(self, image, position = (0, 0), button_position = (0, 0)):
         self.image_name = image
         BaseSprite.__init__(self)
         self.screen = pygame.display.get_surface()
         self.area = self.screen.get_rect()
+
+#W1: (255, 237) -> (278, 232)
+#W1: (255, 237) -> (277, 247)
+#W1: (255, 237) -> (375, 231)
+#W1: (255, 237) -> (375, 247)
+        button_width = 100
+        button_height = 40
+        self.button_rect = pygame.Rect((button_position), (button_width, button_height))
+        self.button_rect.topleft = button_position
 
         self.image, self.rect = self.load_image(image, TRANSPARENT)
         self.size = self.image.get_size()
@@ -126,6 +135,11 @@ class Mask(BaseSprite):
         self.rect = self.image.get_rect()
         self.rect.center = position
         #sprites.add(self, layer=self.layer)
+#Mouse at (229, 365)
+#Mouse at (228, 403)
+#Mouse at (668, 366)
+#Mouse at (670, 404)
+        self.button_rect = pygame.Rect((229,365), (self.rect.width, 50))
 
 
 class Graph(BaseSprite):

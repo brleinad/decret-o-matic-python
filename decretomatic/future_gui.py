@@ -1,10 +1,10 @@
 import pygame
 import numpy
+import random 
 
 WIDTH = 1200
 HEIGHT = 800
 BLACK = (0, 0, 0)
-#REDRAW = pygame.USEREVENT
 
 
 class Widget():
@@ -81,6 +81,7 @@ class Widget():
             pygame.draw.polygon(surface, (*color2, 128), points)
             #pygame.draw.polygon(surface, color, points, 1)
             pygame.draw.lines(surface, color, False, points[1:-1], 1)
+
 
 class MovableWidget(Widget):
 
@@ -435,8 +436,6 @@ class Border2(MovableWidget):
             self.redrawing = True            
 
 # --------------------------------------------------------------------
-import random # choice
-import itertools # cycle
 
 
 class FutureGUI():

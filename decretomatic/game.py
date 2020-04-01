@@ -48,12 +48,9 @@ class People():
         self.new_sick_ppl = int(self.sick_ppl * (max(1.0, (decrees_factor + standard_factor))-1))
         self.sick_ppl += self.new_sick_ppl
         print(f'sick people: {self.sick_ppl} with factor: {decrees_factor}')
-#
-#        sum_factors = sum(decree.get_factor()) for active_decrees
-#        gente_giorno_dopo = gente_giorno_prima * (sum_factors + standard_factor)
 
 
-class Game:
+class Game():
     FLAGS = 0
     FPS = 30
 
@@ -94,9 +91,19 @@ class Game:
         w3_x = mask_topleft_x + mask_width * 0.6558
         w3_y = mask_topleft_y + mask_width * 0.1556
 
-        self.w1 = Wheel('w1_z.png', (w1_x, w1_y))
-        self.w2 = Wheel('w2_z.png', (w2_x, w2_y))
-        self.w3 = Wheel('w3_z.png', (w3_x, w3_y))
+        #Button positions are relative to the mask
+        #oM: (255, 237) -> (227, 173)
+        #W1: (255, 237) -> (278, 232)
+        w1_button_pos = (mask_topleft_x + 51, mask_topleft_y + 59)
+        #W2: (362, 307) -> (384, 301)
+        w2_button_pos = (mask_topleft_x + 157, mask_topleft_y + 128)
+        #W3: (518, 239) -> (540, 231)
+        w3_button_pos = (mask_topleft_x + 313, mask_topleft_y + 58)
+
+        self.w1 = Wheel('w1_z.png', (w1_x, w1_y), w1_button_pos)
+        self.w2 = Wheel('w2_z.png', (w2_x, w2_y), w2_button_pos)
+        self.w3 = Wheel('w3_z.png', (w3_x, w3_y), w3_button_pos)
+
 
         self.decrees = Decrees()
         self.people = People(self.decrees)
@@ -111,9 +118,19 @@ class Game:
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
-        self.decrees_font = pygame.font.SysFont('Monospace', 20)
+        self.decrees_font = pygame.font.SysFont('Monospace', 16)
         textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
         self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
+
+    def update_decrees(self):
+        decree_index = (
+                self.w1.decree_index, 
+                self.w2.decree_index, 
+                self.w3.decree_index)
+        print('index')
+        print(decree_index)
+        self.decrees.add_valid_decree(decree_index)
+        self.update_decrees_text()
         
     def events(self, events):
         """
@@ -131,18 +148,25 @@ class Game:
                 elif event.key == K_3:
                     self.w3.next_decree()
                 elif event.key == K_SPACE:
-                    decree_index = (
-                            self.w1.decree_index, 
-                            self.w2.decree_index, 
-                            self.w3.decree_index)
-                    print('index')
-                    print(decree_index)
-                    self.decrees.add_valid_decree(decree_index)
-                    self.update_decrees_text()
+                    self.update_decrees()
                 elif event.key == K_p:
                     self.decrees.print_valid_decrees()
                 elif event.key == K_RETURN:
                     self.next_day()
+            elif event.type == MOUSEBUTTONDOWN:
+                print(f'Mouse at {event.pos}')
+                if self.w1.button_rect.collidepoint(event.pos):
+                    self.w1.next_decree()
+                    #print(f'W1: {self.w1.rect.center} -> {event.pos}')
+                if self.w2.button_rect.collidepoint(event.pos):
+                    self.w2.next_decree()
+                    #print(f'W2: {self.w2.rect.center} -> {event.pos}')
+                if self.w3.button_rect.collidepoint(event.pos):
+                    self.w3.next_decree()
+                    #print(f'W3: {self.w3.rect.center} -> {event.pos}')
+                if self.mask.button_rect.collidepoint(event.pos):
+                    self.update_decrees()
+
 
 
     def render(self):
