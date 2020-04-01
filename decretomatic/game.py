@@ -210,6 +210,7 @@ class Game():
         Advance the game to the next day.
         """
         self.day += 1
+        self.decree_actions=0
         self.days.append(self.day)
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
