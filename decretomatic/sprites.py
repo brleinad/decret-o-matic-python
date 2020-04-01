@@ -84,13 +84,15 @@ class Wheel(BaseSprite):
         """
         Spin or stay.
         """
-        if self.spinning:
+        if self.spinning >=1:
             self._spin()
+        elif self.spinning<=-1:
+            self._aspin()
         self.decree_index = self.spins
 
     def _spin(self):
         """
-        Spin the wheel.
+        Spin the wheelclockwise.
         """
         center = self.rect.center
         self.spinning += 4
@@ -109,6 +111,28 @@ class Wheel(BaseSprite):
             #print(self.spins)
 
         self.rect = self.image.get_rect(center = center)
+		
+    def _aspin(self):
+        """
+        Spin the wheel anticlockwise.
+        """
+        center = self.rect.center
+        self.spinning -= 4
+
+        if self.spinning < -51.43:
+            self.spinning = 0
+            self.spins -= 1
+
+        if self.spins == 0:
+            #self.image, self.rect = self.load_image(self.image_name, TRANSPARENT)
+            self.image = self.initial_image.copy()
+            #self.spins = 0
+        else:
+            rotation_angle = 51.43 * self.spins + self.spinning
+            self.image = pygame.transform.rotate(self.initial_image, rotation_angle)
+            #print(self.spins)
+
+        self.rect = self.image.get_rect(center = center)
 
     def next_decree(self):
         """
@@ -116,6 +140,13 @@ class Wheel(BaseSprite):
         """
         if not self.spinning:
             self.spinning = 1
+			
+    def prev_decree(self):
+        """
+        This will spin to the prev decree.
+        """
+        if not self.spinning:
+            self.spinning = -1
 
 
 

@@ -171,17 +171,20 @@ class Game():
             elif event.type == MOUSEBUTTONDOWN:
                 print(f'Mouse at {event.pos}')
                 if self.w1.button_rect.collidepoint(event.pos):
-                    self.w1.next_decree()
+                    if event.button==1: self.w1.next_decree()
+                    if event.button==3: self.w1.prev_decree()
                     #print(f'W1: {self.w1.rect.center} -> {event.pos}')
                 elif self.w2.button_rect.collidepoint(event.pos):
-                    self.w2.next_decree()
+                    if event.button==1: self.w2.next_decree()
+                    if event.button==3: self.w2.prev_decree()
                     #print(f'W2: {self.w2.rect.center} -> {event.pos}')
                 elif self.w3.button_rect.collidepoint(event.pos):
-                    self.w3.next_decree()
+                    if event.button==1: self.w3.next_decree()
+                    if event.button==3: self.w3.prev_decree()
                     #print(f'W3: {self.w3.rect.center} -> {event.pos}')
                 elif self.mask.button_rect.collidepoint(event.pos):
                     self.update_decrees()
-
+				
                 #for del_button in self.decrees.delete_buttons
                 #    if del_button.rect.collidepoint(event.pos):
                 #        del_button.hit = True
