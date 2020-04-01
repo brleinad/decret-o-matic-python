@@ -110,12 +110,10 @@ class Game:
         self.sprites.add(self.w3, layer = 1)
         #self.sprites.add(self.graph, layer = 1)
 
-
-        self.title_font = pygame.font.SysFont('Comic Sans MS', 30, True)
-        self.decrees_font = pygame.font.SysFont('Comic Sans MS', 20)
+        self.title_font = pygame.font.SysFont('Monospace', 30, True)
+        self.decrees_font = pygame.font.SysFont('Monospace', 20)
         textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
         self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
-
         
     def events(self, events):
         """
