@@ -125,6 +125,7 @@ class Game():
 
         self.decree_actions = 0
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
+        self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
 
 
     def update_decrees(self):
@@ -184,6 +185,8 @@ class Game():
                     #print(f'W3: {self.w3.rect.center} -> {event.pos}')
                 elif self.mask.button_rect.collidepoint(event.pos):
                     self.update_decrees()
+                elif self.day_button_rect.collidepoint(event.pos):
+                    self.next_day()
 				
                 #for del_button in self.decrees.delete_buttons
                 #    if del_button.rect.collidepoint(event.pos):
