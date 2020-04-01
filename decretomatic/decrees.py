@@ -2,7 +2,9 @@ import pygame
 import random
 import pprint
 
+#from .sprite import Delete
 from .constants import *
+
 class Decrees():
     """
     Holds all the information used for managing decrees.
@@ -63,6 +65,15 @@ class Decrees():
         self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]] = \
             self.decrees[decree_index[0]][decree_index[1]][decree_index[2]]
         return True
+
+    def delete_valid_decree(self, decree_index):
+        """
+        Given a decree index touple it will delete the corresponding decree to a list.
+        """
+        if self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]]:
+            self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]] = ''
+            return True
+        return False
 
 
     def print_valid_decrees(self):
@@ -126,5 +137,6 @@ class Decrees():
             dec_textsurface = self.decrees_font.render(dec, False, color['GREY'])
             text_y += word_height
             self.screen.blit(dec_textsurface,(text_x, text_y))
+            #delete_sprite()
 
 

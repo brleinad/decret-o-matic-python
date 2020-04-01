@@ -183,4 +183,13 @@ class Graph(BaseSprite):
         raw_data = renderer.tostring_rgb()
         self.surf = pygame.image.fromstring(raw_data, size, "RGB")
 
+def DeleteDecree(BaseSprite):
+    """
+    TODO
+    """
+    def __init__(self, decrees):
+        self.decree_indeces = decree_indeces
+
+
+
 
