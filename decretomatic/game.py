@@ -24,6 +24,7 @@ class People():
         self.decrees = decrees
         self.sick_ppl = 1
         self.new_sick_ppl = 0
+        self.t_new_sick_ppl = 0
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
         self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
         #factor = sum((self.get_factors))
@@ -38,13 +39,17 @@ class People():
         valid_factors = []
         for i, j, k in self.decrees.get_valid_indeces():
             valid_factors.append(self.decrees.factors[i][j][k])
-
         standard_factor = 2.0 + float(random.randint(0,10))*0.1
         decrees_factor = sum(valid_factors)
-        self.new_sick_ppl = int(self.sick_ppl * (max(1.0, (decrees_factor + standard_factor))-1))
-        self.sick_ppl += self.new_sick_ppl
-        print(f'sick people: {self.sick_ppl} with factor: {decrees_factor}')
-
+        self.t_new_sick_ppl += int((self.sick_ppl+self.t_new_sick_ppl) * (max(1.0, (decrees_factor + standard_factor))-1))
+        self.new_sick_ppl=0
+        print(f'sick people: {self.sick_ppl + self.t_new_sick_ppl} with factor: {decrees_factor}')
+		
+    def count_up_sick(self):
+        if self.t_new_sick_ppl > 0:
+    	    self.sick_ppl += max(self.t_new_sick_ppl//10,1)
+    	    self.new_sick_ppl += max(self.t_new_sick_ppl//10,1)
+    	    self.t_new_sick_ppl -= max(self.t_new_sick_ppl//10,1)
         self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
 
 
@@ -225,6 +230,7 @@ class Game():
             events = pygame.event.get()
             self.events(events)
             self.sprites.update()
+            self.people.count_up_sick()
             self.render()
             pygame.display.flip()
 
