@@ -3,33 +3,29 @@ import random
 import pygame
 from pygame.locals import *
 
+from .constants import *
 from .sprites import Wheel, Mask, Graph
 from .decrees import Decrees
 
-WIDTH = 1280
-HEIGHT = 720
-GREEN = (0, 255, 0)
-GREY = (150, 150, 150)
-MASK_POS_X = 0.35 #relative to WIDTH
-MASK_POS_Y = 0.4 #relative to HEIGHT
-
 #TODOs: 
-#mouse, 
-#buttons,
 #deleting decrees, 
-#max 3 decree actions per day,
-#game over on the 14th day, LIMIT=500000
+#game over screen
 #new game option,
 #Change fonts
 #Use sprite sheet at the end of rotate
+#improve gui with future gui
+#highlight buttons when mouse hovers 
 
 class People():
     """
     """
-    def __init__(self, decrees):
-	    self.sick_ppl = 1
-	    self.new_sick_ppl =	0
-	    self.decrees = decrees
+    def __init__(self, screen, decrees):
+        self.screen = screen
+        self.decrees = decrees
+        self.sick_ppl = 1
+        self.new_sick_ppl = 0
+        self.title_font = pygame.font.SysFont('Monospace', 30, True)
+        self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
         #factor = sum((self.get_factors))
     def get_sick_people(self):
         return self.sick_ppl
@@ -48,6 +44,8 @@ class People():
         self.new_sick_ppl = int(self.sick_ppl * (max(1.0, (decrees_factor + standard_factor))-1))
         self.sick_ppl += self.new_sick_ppl
         print(f'sick people: {self.sick_ppl} with factor: {decrees_factor}')
+
+        self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
 
 
 class Game():
@@ -104,9 +102,8 @@ class Game():
         self.w2 = Wheel('w2_z.png', (w2_x, w2_y), w2_button_pos)
         self.w3 = Wheel('w3_z.png', (w3_x, w3_y), w3_button_pos)
 
-
-        self.decrees = Decrees()
-        self.people = People(self.decrees)
+        self.decrees = Decrees(self.screen)
+        self.people = People(self.screen, self.decrees)
         self.graph = Graph(self.sick_ppls, self.days)
 
         self.sprites = pygame.sprite.LayeredUpdates()
@@ -118,19 +115,31 @@ class Game():
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
-        self.decrees_font = pygame.font.SysFont('Monospace', 16)
         textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
         self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
 
+        self.decree_actions = 0
+        self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
+
+
     def update_decrees(self):
+        """
+        Update the list of valid decrees made by the player.
+        """
         decree_index = (
                 self.w1.decree_index, 
                 self.w2.decree_index, 
                 self.w3.decree_index)
         print('index')
         print(decree_index)
-        self.decrees.add_valid_decree(decree_index)
-        self.update_decrees_text()
+        if self.decrees.add_valid_decree(decree_index):
+            self.decree_actions += 1
+            self.decrees.update_decrees_text()
+
+        if self.decree_actions >= 3:
+            self.decree_actions = 0
+            self.next_day()
+
         
     def events(self, events):
         """
@@ -151,7 +160,8 @@ class Game():
                     self.update_decrees()
                 elif event.key == K_p:
                     self.decrees.print_valid_decrees()
-                elif event.key == K_RETURN:
+                elif event.key == K_RETURN: 
+                    #TODO: remove this elif, only for debugging
                     self.next_day()
             elif event.type == MOUSEBUTTONDOWN:
                 print(f'Mouse at {event.pos}')
@@ -168,7 +178,6 @@ class Game():
                     self.update_decrees()
 
 
-
     def render(self):
         """
         Do all the rendering and displaying of sprites and what not.
@@ -176,40 +185,25 @@ class Game():
         self.screen.blit(self.background, (0, 0))
         self.sprites.draw(self.screen)
         self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
-
-    def update_decrees_text(self):
-        """
-        Update and blit the text showing the current valid decrees.
-        """
-        valid_decrees = 'Decreti\n'
-        #valid_decrees += self.decrees.get_valid_decrees_str()
-
-        textsurface = self.title_font.render('Decreti', False, GREY)
-        text_x, text_y = WIDTH*0.6, HEIGHT*0.1
-        self.screen.blit(textsurface,(text_x, text_y))
-
-        word_width, word_height = textsurface.get_size()
-
-        for dec in self.decrees.get_valid_decrees():
-            dec_textsurface = self.decrees_font.render(dec, False, GREY)
-            text_y += word_height
-            self.screen.blit(dec_textsurface,(text_x, text_y))
-
-        sick_ppl = self.people.get_sick_people()
-        new_sick_ppl = self.people.get_new_sick_people()
-        ppl_textsurface = self.title_font.render(f'Contagi: {sick_ppl} (+{new_sick_ppl})', False, GREY)
-        self.screen.blit(ppl_textsurface,(WIDTH*0.02, HEIGHT*0.6))
-
-        day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, GREY)
-        self.screen.blit(day_textsurface,(WIDTH*0.06, HEIGHT*0.06))
+        self.screen.blit(self.people.ppl_textsurface,(WIDTH*0.02, HEIGHT*0.6))
+        self.decrees.update_decrees_text()
+        self.screen.blit(self.day_textsurface,(WIDTH*0.06, HEIGHT*0.06))
 
     def next_day(self):
+        """
+        Advance the game to the next day.
+        """
         self.day += 1
         self.days.append(self.day)
         self.sick_ppls.append(self.people.get_sick_people())
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.graph.update()
+        self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
+
+        if self.day == LAST_DAY:
+            if self.sick_ppls[-1] > MAX_SICK_PPL:
+                self.lost_game
 
     def get_day(self):
         return self.day
@@ -222,12 +216,11 @@ class Game():
         while self.running:
             self.clock.tick(self.FPS)
             fs = time.time()
-            self.render()
+            #self.render()
             events = pygame.event.get()
             self.events(events)
             self.sprites.update()
             self.render()
-            self.update_decrees_text()
             pygame.display.flip()
 
         pygame.quit()
