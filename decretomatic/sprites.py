@@ -51,8 +51,6 @@ class Wheel(BaseSprite):
     def __init__(self, image, position = (0, 0), button_position = (0, 0)):
         self.image_name = image
         BaseSprite.__init__(self)
-        self.screen = pygame.display.get_surface()
-        self.area = self.screen.get_rect()
 
 #W1: (255, 237) -> (278, 232)
 #W1: (255, 237) -> (277, 247)
@@ -153,8 +151,6 @@ class Mask(BaseSprite):
     def __init__(self, position):
         BaseSprite.__init__(self)
         self.image, self.rect = self.load_image('mask_z.png', TRANSPARENT)
-        self.screen = pygame.display.get_surface()
-        self.area = self.screen.get_rect()
         self.size = self.image.get_size()
         self.rect.center = position
         self.button_rect = pygame.Rect((229,365), (self.rect.width, 50))
@@ -167,8 +163,6 @@ class Bin(BaseSprite):
     def __init__(self, position):
         BaseSprite.__init__(self)
         self.image, self.rect = self.load_image('bin_s.png', TRANSPARENT)
-        self.screen = pygame.display.get_surface()
-        self.area = self.screen.get_rect()
         self.size = self.image.get_size()
         self.rect.center = position
 

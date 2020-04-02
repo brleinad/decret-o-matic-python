@@ -6,7 +6,10 @@ import matplotlib.backends.backend_agg as agg
 import pylab
 
 from .sprites import BaseSprite
-from .future_gui import LineBorder
+from . import future_gui
+from .constants import *
+import pygame.gfxdraw
+from math import log10
 
 class Graph(BaseSprite):
     """
@@ -19,8 +22,6 @@ class Graph(BaseSprite):
         self.sick_ppls = sick_peoples
         self.days = days
 
-        self.screen = pygame.display.get_surface()
-        self.area = self.screen.get_rect()
         self.update()
 
     def update(self):
@@ -50,15 +51,138 @@ class Graph(BaseSprite):
         self.surf = pygame.image.fromstring(raw_data, size, "RGB")
 
 
-class LineGraph(LineBorder):
+class LineGraph(BaseSprite):#, future_gui.LineGraph):
     """
     Cool graph to show total number of sick people.
     """
-    def __init__(self, screen, position, width, height):
-        LineBorder.__init__(screen, position, width, height, False, (0, 180, 220))
+    def __init__(self, sick_ppls, days):
+        BaseSprite.__init__(self)
+        x, y = (WIDTH*0.1,HEIGHT*0.7)
+        self.position = (x, y)
+        width, height = 305, 200
+        #future_gui.LineGraph.__init__(self, screen, position[0], position[1], width, height, movable=False, color=(0, 180, 220))
+        #BaseSprite.__init__(self)
+        self.sick_ppls = sick_ppls
+        self.days = days
+        self.color = (0, 180, 220) #TODO: add all colors here to constants
+        fill = (0,0,0,128)
+        
 
-    #def update(self):
-    #    pass
+        self.rect = pygame.Rect(x, y, width, height)
+        self.image = pygame.Surface((width, height)).convert_alpha()
+        self.image.fill(fill)
+
+        self.border_rect = pygame.Rect(x, y, width, height)
+        self.border = pygame.Surface( self.border_rect.size ).convert_alpha()
+        #self.draw_border(self.border, self.border_rect, self.color, True, 3, False)
+        self.draw_border(self.image, self.rect, self.color, True, 3, False)
+
+        self.update()
+
+
+    def update(self):
+
+        width, height = self.rect.size
+        
+        color1 = self.color
+        color2 = (0, 80, 110, 128)
+        color3 = (255, 190, 50, 255)
+        
+        #for p1, p2 in zip(points, points[1:]):
+            #pygame.gfxdraw.line(self.image, *p1, *p2, color2)
+
+        origin_x, origin_y = self.rect.topleft
+        
+        for i in range(len(self.days)): #range(LAST_DAY):
+            #x = origin_x + self.days[i]*width/14
+            x = self.days[i]*width/14
+            #y = height - height*log10(self.sick_ppls[i]*10/MAX_SICK_PPL)
+            #TODO: figure out a better scale
+            y = height - height*(self.sick_ppls[i]/MAX_SICK_PPL)
+            x, y = (int(x), int(y))
+
+            pygame.draw.rect(self.image, color3, (x-2, y-2, 4, 4), 0) 
+            #pygame.draw.rect(self.image, color3, (self.days[i]-2, self.sick_ppls[i]-2, 4, 4), 0) 
+            #pygame.gfxdraw.circle(self.image, color1, (x, y), 10, 1) 
+            pygame.gfxdraw.aacircle(self.image, x, y, 10, color1) 
+            #pygame.gfxdraw.aacircle(self.image, self.days[i], self.sick_ppls[i], 10, color1) 
+
+
+    def draw_border(self, surface, rect, color, border=True, corners=True, other=False):
+        
+        left, top = 0, 0
+        width, height = rect.size
+        right, bottom = width-1, height-1
+
+        color2 = tuple(x*50//100 for x in color)
+
+        # --- border ---
+        
+        if border:
+            thickness = border
+            if border is True:
+                thickness = 1
+
+            size_x = 50 
+            size_y = 50
+            
+            points = [
+                    (left, top), 
+                        (left+size_x, top), (left+size_x+5, top+5),
+                        (right-size_x-5, top+5), (right-size_x, top), 
+                    (right, top),
+                        (right, top+size_y), (right-5, top+size_y+5),
+                        (right-5, bottom-size_y-5), (right, bottom-size_y), 
+                    (right, bottom),
+                        (right-size_x, bottom), (right-size_x-5, bottom-5), 
+                        (left+size_x+5, bottom-5), (left+size_x, bottom),
+                    (left, bottom), 
+                         (left, bottom-size_y), (left+5, bottom-size_y-5),
+                        (left+5, top+size_y+5), (left, top+size_y), 
+                    (left, top), 
+                    ]
+                      
+            pygame.draw.lines(surface, color2, False, points) 
+
+        # --- corners ---
+
+        if corners:
+            thickness = corners
+            if corners is True:
+                thickness = 5
+                
+            # left top
+            pygame.draw.line(surface, color, (left, top), (left+15, top), thickness) 
+            pygame.draw.line(surface, color, (left, top), (left, top+15), thickness) 
+
+            # right top
+            pygame.draw.line(surface, color, (right, top), (right-15, top), thickness) 
+            pygame.draw.line(surface, color, (right, top), (right, top+15), thickness) 
+
+            # right bottom
+            pygame.draw.line(surface, color, (right, bottom), (right-15, bottom), thickness) 
+            pygame.draw.line(surface, color, (right, bottom), (right, bottom-15), thickness) 
+
+            # left bottom
+            pygame.draw.line(surface, color, (left, bottom), (left+15, bottom), thickness) 
+            pygame.draw.line(surface, color, (left, bottom), (left, bottom-15), thickness) 
+        
+        # --- other ---
+
+        if other:
+            points = ( (left+5, top+5), (left+5, top+30), (left+50, top+30), (left+50+10, top+20), (right-5, top+20), (right-5, top+5) )
+            
+            pygame.draw.polygon(surface, (*color2, 128), points)
+            #pygame.draw.polygon(surface, color, points, 1)
+            pygame.draw.lines(surface, color, False, points[1:-1], 1)
+            
+
+            points = ( (left+5, bottom-5), (left+5, bottom-20), (right-50-10, bottom-20), (right-50, bottom-30), (right-5, bottom-30), (right-5, bottom-5) )
+            
+            pygame.draw.polygon(surface, (*color2, 128), points)
+            #pygame.draw.polygon(surface, color, points, 1)
+            pygame.draw.lines(surface, color, False, points[1:-1], 1)
+
 
 
 

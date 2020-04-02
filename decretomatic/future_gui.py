@@ -157,7 +157,7 @@ class Rectangle(MovableWidget):
         self.draw_border(self.border, self.border_rect, self.color, False, 1, False)
 
 
-class LineBorder(MovableWidget):
+class BarGraph(MovableWidget):
     
     def __init__(self, screen, x, y, width, height, movable=False, color=(0, 100, 255), fill=(0,0,0,128)):
         MovableWidget.__init__(self, screen)
@@ -289,7 +289,7 @@ class LineBorder(MovableWidget):
             self.anim_time = time + self.anim_deltatime
             self.redrawing = True            
 
-class BarBorder(MovableWidget):
+class LineGraph(MovableWidget):
     
     def __init__(self, screen, x, y, width, height, movable=False, color=(0, 100, 255), fill=(0,0,0,128)):
         MovableWidget.__init__(self, screen)
@@ -474,10 +474,10 @@ class FutureGUI():
         self.widgets = [
             Rectangle(self.screen, 0, 0, WIDTH, HEIGHT, False, (100, 255,0), fill=(255,255,255,0), grid=True),
         ]
-        self.widgets.append(LineBorder(self.screen, 20, 200, 305, 200, True, (0, 180, 220)))
-        self.widgets.append(BarBorder(self.screen, 325, 200, 305, 200, True, (0, 180, 220)))
-        self.widgets.append(LineBorder(self.screen, 325, 400, 305, 200, True, (0, 180, 220)))
-        self.widgets.append(BarBorder(self.screen, 20, 400, 305, 200, True, (0, 180, 220)))
+        self.widgets.append(BarGraph(self.screen, 20, 200, 305, 200, True, (0, 180, 220)))
+        self.widgets.append(LineGraph(self.screen, 325, 200, 305, 200, True, (0, 180, 220)))
+        self.widgets.append(BarGraph(self.screen, 325, 400, 305, 200, True, (0, 180, 220)))
+        self.widgets.append(LineGraph(self.screen, 20, 400, 305, 200, True, (0, 180, 220)))
 
 
     def is_redrawing(self):

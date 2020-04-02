@@ -116,8 +116,8 @@ class Game():
 
         self.decrees = Decrees(self.screen)
         self.people = People(self.screen, self.decrees)
-        self.graph = Graph(self.sick_ppls, self.days)
-        #self.line_graph = LineGraph(self.screen, (325, 400), 305, 200)
+        #self.graph = Graph(self.sick_ppls, self.days)
+        self.line_graph = LineGraph(self.sick_ppls, self.days)
 
         self.sprites = pygame.sprite.LayeredUpdates()
         self.sprites.add(self.mask, layer = 4)
@@ -126,7 +126,7 @@ class Game():
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.bin, layer = 1)
-        #self.sprites.add(self.line_graph, layer = 1)
+        self.sprites.add(self.line_graph, layer = 4)
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
@@ -231,7 +231,7 @@ class Game():
         """
         self.screen.blit(self.background, (0, 0))
         self.sprites.draw(self.screen)
-        self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
+        #self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
         self.screen.blit(self.people.ppl_textsurface,(WIDTH*0.02, HEIGHT*0.65))
         self.decrees.update_decrees_text()
         self.screen.blit(self.day_textsurface,(WIDTH*0.06, HEIGHT*0.06))
@@ -246,7 +246,7 @@ class Game():
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
-        self.graph.update() #TODO: do for cool graphs
+        #self.graph.update() #TODO: do for cool graphs
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
         self.decree2delete_index = -1
         self.decrees.selected_decree_index = -1
