@@ -10,6 +10,7 @@ from .decrees import Decrees
 from .future_gui import Rectangle
 
 #TODOs: 
+#Highight decree to be deleted
 #game over screen
 #new game option,
 #Change fonts
@@ -27,6 +28,7 @@ class People():
         self.sick_ppl = 1
         self.new_sick_ppl = 0
         self.t_new_sick_ppl = 0
+        self.extra_factor = 0.0
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
         self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
         #factor = sum((self.get_factors))
@@ -41,8 +43,9 @@ class People():
         valid_factors = []
         for i, j, k in self.decrees.get_valid_indeces():
             valid_factors.append(self.decrees.factors[i][j][k])
-        standard_factor = 2.0 + float(random.randint(0,10))*0.1
+        standard_factor = 2.0 + self.extra_factor + float(random.randint(0,10))*0.1
         decrees_factor = sum(valid_factors)
+        if decrees_factor+standard_factor<=0: self.extra_factor+=0.1
         self.t_new_sick_ppl += int((self.sick_ppl+self.t_new_sick_ppl) * (max(1.0, (decrees_factor + standard_factor))-1))
         self.new_sick_ppl=0
         print(f'sick people: {self.sick_ppl + self.t_new_sick_ppl} with factor: {decrees_factor}')
@@ -134,7 +137,9 @@ class Game():
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
         self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
 
-
+    def update_day(self):
+        self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', False, color['GREY'])
+        
     def update_decrees(self):
         """
         Update the list of valid decrees made by the player.
@@ -149,7 +154,7 @@ class Game():
             self.actions += 1
             self.decrees.update_decrees_text()
 
-        if self.actions >= 3:
+        if self.actions >= MAX_ACTIONS:
             self.actions = 0
             self.next_day()
 
@@ -199,16 +204,24 @@ class Game():
                     if self.do_delete:
                         self.decrees.delete_valid_decree(self.decree2delete_index)
                         self.do_delete = False
-                        self.actions += 1
+                        self.actions += 2
                         self.decrees.selected_decree_index = ()
+                        if self.actions >= MAX_ACTIONS:
+                            self.actions = 0
+                            self.next_day()
+
                         #self.update_decrees()
                 else:
                     for decree_index, delete_button in self.decrees.delete_buttons.items():
-                        if delete_button.collidepoint(event.pos):
+                        if delete_button.collidepoint(event.pos) and (self.actions<=MAX_ACTIONS-2 or self.do_delete):
                             #self.decrees.delete_decree(decree_index)
-                            self.decree2delete_index = decree_index
-                            self.do_delete = True
-                            self.decrees.selected_decree_index = decree_index
+                            self.do_delete =  not self.do_delete
+                            if self.do_delete:
+                                self.decree2delete_index = decree_index
+                                self.decrees.selected_decree_index = decree_index
+                            else:
+                                self.decree2delete_index = -1
+                                self.decrees.selected_decree_index = -1
                             #self.update_decree()
 
 
@@ -228,13 +241,15 @@ class Game():
         Advance the game to the next day.
         """
         self.day += 1
-        self.decree_actions=0
+        self.actions=0
         self.days.append(self.day)
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
         self.graph.update() #TODO: do for cool graphs
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
+        self.decree2delete_index = -1
+        self.decrees.selected_decree_index = -1
 
         if self.day == LAST_DAY:
             if self.sick_ppls[-1] > MAX_SICK_PPL:
@@ -256,6 +271,7 @@ class Game():
             self.events(events)
             self.sprites.update()
             self.people.update()
+            self.update_day()
             self.render()
             pygame.display.flip()
 
