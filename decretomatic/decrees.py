@@ -59,7 +59,7 @@ class Decrees():
 
         pprint.pprint(self.factors)
         self.decrees_font = pygame.font.SysFont('Monospace', 12)
-        self.seleted_decrees_font = pygame.font.SysFont('Monospace', 12, bold=True)
+        self.selected_decrees_font = pygame.font.SysFont('Monospace', 12, bold=True)
 
     def print_decs(self):
         pprint.pprint(self.decrees)
