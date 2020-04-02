@@ -42,6 +42,8 @@ class Decrees():
         self.screen = screen
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
         self.delete_buttons = {}
+        self.selected_decree_index = ()
+
 
         self.decrees = [[[' '.join((dec1, dec2, dec3)) for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
 
@@ -57,6 +59,7 @@ class Decrees():
 
         pprint.pprint(self.factors)
         self.decrees_font = pygame.font.SysFont('Monospace', 12)
+        self.seleted_decrees_font = pygame.font.SysFont('Monospace', 12, bold=True)
 
     def print_decs(self):
         pprint.pprint(self.decrees)
@@ -145,6 +148,9 @@ class Decrees():
         for dec_i, dec in self.get_valid_decrees().items():
             #Do actual text
             dec_textsurface = self.decrees_font.render(dec, False, color['GREY'])
+            if self.selected_decree_index == dec_i:
+                dec_textsurface = self.selected_decrees_font.render(dec, False, color['RED'])
+
             text_y += word_height
             self.screen.blit(dec_textsurface,(text_x, text_y))
             #Do delete buttons

@@ -196,6 +196,7 @@ class Game():
                         self.decrees.delete_valid_decree(self.decree2delete_index)
                         self.do_delete = False
                         self.actions += 1
+                        self.selected_decree_index = ()
                         #self.update_decrees()
                 else:
                     for decree_index, delete_button in self.decrees.delete_buttons.items():
@@ -203,7 +204,7 @@ class Game():
                             #self.decrees.delete_decree(decree_index)
                             self.decree2delete_index = decree_index
                             self.do_delete = True
-                            delete_button.
+                            self.decree.selected_decree_index = decree_index
                             #self.update_decree()
 
 
