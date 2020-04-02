@@ -4,6 +4,7 @@ MASK_POS_X = 0.35 #relative to WIDTH
 MASK_POS_Y = 0.4 #relative to HEIGHT
 LAST_DAY = 14
 MAX_SICK_PPL = 500000
+MAX_ACTIONS = 3
 
 color = {
     'GREEN' : (0, 255, 0),
