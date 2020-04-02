@@ -45,8 +45,14 @@ class Decrees():
         self.decrees = [[[' '.join((dec1, dec2, dec3)) for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
 
         self.valid_decrees = [[['' for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
-
+		
         self.factors = [[[self.get_factor() for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
+		
+        for j in range(7):
+            for k in range(7):
+                self.factors[2][j][k]=-self.factors[1][j][k]
+                self.factors[4][j][k]=-self.factors[3][j][k]
+                self.factors[6][j][k]=-self.factors[5][j][k]
 
         pprint.pprint(self.factors)
         self.decrees_font = pygame.font.SysFont('Monospace', 12)
@@ -104,7 +110,6 @@ class Decrees():
         return valid_indeces
 
     def get_factor(self): 
-
         max_power = 10.0
         fix_power = 3.0
         exp_power = 1.4
