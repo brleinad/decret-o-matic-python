@@ -41,6 +41,7 @@ class Decrees():
     def __init__(self, screen):
         self.screen = screen
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
+        self.delete_buttons = {}
 
         self.decrees = [[[' '.join((dec1, dec2, dec3)) for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
 
@@ -93,12 +94,17 @@ class Decrees():
     def get_valid_decrees(self):
         #pprint.pprint(self.valid_decrees)
         valid_decs = []
+        valid_indeces = []
+        valid_index2decs = {}
         for i in range(len(self.valid_decrees)):
             for j in range(len(self.valid_decrees[i])):
                 for k in range(len(self.valid_decrees[j])):
                     if self.valid_decrees[i][j][k]:
-                        valid_decs.append(self.valid_decrees[i][j][k])
-        return valid_decs
+                        #valid_decs.append(self.valid_decrees[i][j][k])
+                        #valid_indeces.append((i,j,k))
+                        valid_index2decs[(i,j,k)] = self.valid_decrees[i][j][k]
+        #return (valid_indeces, valid_decs)
+        return valid_index2decs
 
     def get_valid_indeces(self):
         valid_indeces = []
@@ -131,17 +137,27 @@ class Decrees():
         """
         valid_decrees = 'Decreti\n'
         #valid_decrees += self.decrees.get_valid_decrees_str()
-
         textsurface = self.title_font.render('Decreti', False, color['GREY'])
         text_x, text_y = WIDTH*0.58, HEIGHT*0.1
         self.screen.blit(textsurface,(text_x, text_y))
-
         word_width, word_height = textsurface.get_size()
 
-        for dec in self.get_valid_decrees():
+        for dec_i, dec in self.get_valid_decrees().items():
+            #Do actual text
             dec_textsurface = self.decrees_font.render(dec, False, color['GREY'])
             text_y += word_height
             self.screen.blit(dec_textsurface,(text_x, text_y))
-            #delete_sprite()
+            #Do delete buttons
+            button_width = 200
+            button_height = word_height 
+            self.delete_buttons[dec_i] = pygame.Rect((text_x, text_y), (button_width, button_height))
+
+    def get_decree_index(self, decree):
+        """
+        Given a decree get its touple index.
+        """
+        pass
+
+
 
 

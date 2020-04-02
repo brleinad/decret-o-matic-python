@@ -4,11 +4,11 @@ import pygame
 from pygame.locals import *
 
 from .constants import *
-from .sprites import Wheel, Mask, Graph
+from .sprites import Wheel, Mask, Graph, Bin
 from .decrees import Decrees
 
 #TODOs: 
-#deleting decrees, 
+#Highight decree to be deleted
 #game over screen
 #new game option,
 #Change fonts
@@ -74,12 +74,14 @@ class Game():
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
 
+        self.do_delete = False
         self.day = 1
         self.days = [self.day,]
         self.sick_ppls = [1,]
         self.new_sick_ppls = [0,]
         print(pygame.display.Info())
 
+        self.bin = Bin((WIDTH*0.9, HEIGHT*0.9))
         self.mask = Mask((WIDTH*MASK_POS_X, HEIGHT*MASK_POS_Y))
         mask_width, mask_height = self.mask.size
 
@@ -117,13 +119,14 @@ class Game():
         self.sprites.add(self.w2, layer = 2)
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.w3, layer = 1)
+        self.sprites.add(self.bin, layer = 1)
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
         textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
         self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
 
-        self.decree_actions = 0
+        self.actions = 0
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
         self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
 
@@ -139,11 +142,11 @@ class Game():
         print('index')
         print(decree_index)
         if self.decrees.add_valid_decree(decree_index):
-            self.decree_actions += 1
+            self.actions += 1
             self.decrees.update_decrees_text()
 
-        if self.decree_actions >= 3:
-            self.decree_actions = 0
+        if self.actions >= 3:
+            self.actions = 0
             self.next_day()
 
         
@@ -187,11 +190,21 @@ class Game():
                     self.update_decrees()
                 elif self.day_button_rect.collidepoint(event.pos):
                     self.next_day()
-				
-                #for del_button in self.decrees.delete_buttons
-                #    if del_button.rect.collidepoint(event.pos):
-                #        del_button.hit = True
-                #        self.decrees.update_decree()
+                elif self.bin.rect.collidepoint(event.pos):
+                    print(f'Do delete is {self.do_delete}')
+                    if self.do_delete:
+                        self.decrees.delete_valid_decree(self.decree2delete_index)
+                        self.do_delete = False
+                        self.actions += 1
+                        #self.update_decrees()
+                else:
+                    for decree_index, delete_button in self.decrees.delete_buttons.items():
+                        if delete_button.collidepoint(event.pos):
+                            #self.decrees.delete_decree(decree_index)
+                            self.decree2delete_index = decree_index
+                            self.do_delete = True
+                            delete_button.
+                            #self.update_decree()
 
 
     def render(self):

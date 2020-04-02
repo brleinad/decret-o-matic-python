@@ -86,7 +86,7 @@ class Wheel(BaseSprite):
         """
         if self.spinning >=1:
             self._spin()
-        elif self.spinning<=-1:
+        elif self.spinning <= -1:
             self._aspin()
         self.decree_index = self.spins
 
@@ -111,7 +111,7 @@ class Wheel(BaseSprite):
             #print(self.spins)
 
         self.rect = self.image.get_rect(center = center)
-		
+
     def _aspin(self):
         """
         Spin the wheel anticlockwise.
@@ -126,7 +126,7 @@ class Wheel(BaseSprite):
         if self.spins == 0:
             #self.image, self.rect = self.load_image(self.image_name, TRANSPARENT)
             self.image = self.initial_image.copy()
-            #self.spins = 0
+            self.spins = 6
         else:
             rotation_angle = 51.43 * self.spins + self.spinning
             self.image = pygame.transform.rotate(self.initial_image, rotation_angle)
@@ -140,7 +140,7 @@ class Wheel(BaseSprite):
         """
         if not self.spinning:
             self.spinning = 1
-			
+
     def prev_decree(self):
         """
         This will spin to the prev decree.
@@ -161,15 +161,7 @@ class Mask(BaseSprite):
         self.screen = pygame.display.get_surface()
         self.area = self.screen.get_rect()
         self.size = self.image.get_size()
-        self.image = pygame.transform.scale(self.image, (int(self.size[0]//SCALE_FACTOR), int(self.size[1]//SCALE_FACTOR)))
-        self.size = self.image.get_size()
-        self.rect = self.image.get_rect()
         self.rect.center = position
-        #sprites.add(self, layer=self.layer)
-#Mouse at (229, 365)
-#Mouse at (228, 403)
-#Mouse at (668, 366)
-#Mouse at (670, 404)
         self.button_rect = pygame.Rect((229,365), (self.rect.width, 50))
 
 
@@ -214,12 +206,18 @@ class Graph(BaseSprite):
         raw_data = renderer.tostring_rgb()
         self.surf = pygame.image.fromstring(raw_data, size, "RGB")
 
-def DeleteDecree(BaseSprite):
+class Bin(BaseSprite):
     """
-    TODO
+    A simple bin sprite. It will be used to delete decrees.
     """
-    def __init__(self, decrees):
-        self.decree_indeces = decree_indeces
+    def __init__(self, position):
+        BaseSprite.__init__(self)
+        self.image, self.rect = self.load_image('bin_s.png', TRANSPARENT)
+        self.screen = pygame.display.get_surface()
+        self.area = self.screen.get_rect()
+        self.size = self.image.get_size()
+        self.rect.center = position
+
 
 
 
