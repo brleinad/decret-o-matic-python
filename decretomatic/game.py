@@ -201,6 +201,10 @@ class Game():
                         self.do_delete = False
                         self.actions += 2
                         self.decrees.selected_decree_index = ()
+                        if self.actions >= MAX_ACTIONS:
+                            self.actions = 0
+                            self.next_day()
+
                         #self.update_decrees()
                 else:
                     for decree_index, delete_button in self.decrees.delete_buttons.items():
