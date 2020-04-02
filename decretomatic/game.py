@@ -4,11 +4,12 @@ import pygame
 from pygame.locals import *
 
 from .constants import *
-from .sprites import Wheel, Mask, Graph, Bin
+from .sprites import Wheel, Mask, Bin
+from .graphs import Graph, LineGraph, BarGraph
 from .decrees import Decrees
+from .future_gui import Rectangle
 
 #TODOs: 
-#Highight decree to be deleted
 #game over screen
 #new game option,
 #Change fonts
@@ -18,6 +19,7 @@ from .decrees import Decrees
 
 class People():
     """
+    Class for managing number of sick people.
     """
     def __init__(self, screen, decrees):
         self.screen = screen
@@ -112,6 +114,7 @@ class Game():
         self.decrees = Decrees(self.screen)
         self.people = People(self.screen, self.decrees)
         self.graph = Graph(self.sick_ppls, self.days)
+        #self.line_graph = LineGraph(self.screen, (325, 400), 305, 200)
 
         self.sprites = pygame.sprite.LayeredUpdates()
         self.sprites.add(self.mask, layer = 4)
@@ -120,6 +123,7 @@ class Game():
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.bin, layer = 1)
+        #self.sprites.add(self.line_graph, layer = 1)
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
@@ -229,7 +233,7 @@ class Game():
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
-        self.graph.update()
+        self.graph.update() #TODO: do for cool graphs
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
 
         if self.day == LAST_DAY:

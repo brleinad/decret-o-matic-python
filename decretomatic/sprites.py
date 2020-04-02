@@ -2,15 +2,11 @@ import pygame
 import os
 from pygame.locals import RLEACCEL
 
-import matplotlib
-import matplotlib.pyplot as pyplot
-matplotlib.use("Agg")
-import matplotlib.backends.backend_agg as agg
-import pylab
-
 
 SCALE_FACTOR = 1 #2.5 #for imagees that are too big
 TRANSPARENT = (1, 0, 0)
+
+
 class BaseSprite(pygame.sprite.Sprite):
     """
     Just a base sprite class to use as a parent for all the other sprites.
@@ -149,7 +145,6 @@ class Wheel(BaseSprite):
             self.spinning = -1
 
 
-
 class Mask(BaseSprite):
     """
     Represents the mask that goes on top of the wheels.
@@ -165,47 +160,6 @@ class Mask(BaseSprite):
         self.button_rect = pygame.Rect((229,365), (self.rect.width, 50))
 
 
-class Graph(BaseSprite):
-    """
-    A graph showing number of people that are infected.
-    """
-    sick_ppls = []
-    days = []
-
-    def __init__(self, sick_peoples, days):
-        self.sick_ppls = sick_peoples
-        self.days = days
-
-        self.screen = pygame.display.get_surface()
-        self.area = self.screen.get_rect()
-        self.update()
-
-    def update(self):
-        #pyplot.plot(days, sick_ppl) 
-        #pyplot.xlabel('Giorni') 
-        #pyplot.ylabel('Malati') 
-        #plt.title('') 
-        #plt.show()
-
-        #self.sick_ppls.append(self.sick_ppl)
-        #self.days.append(self.day)
-
-        fig = pylab.figure(figsize=[4, 2], # Inches
-                           dpi=100,        # 100 dots per inch, so the resulting buffer is 400x400 pixels
-                           )
-        ax = fig.gca()
-        print('Plotting')
-        print(self.days)
-        print(self.sick_ppls)
-        ax.plot(self.days, self.sick_ppls)
-
-        canvas = agg.FigureCanvasAgg(fig)
-        canvas.draw()
-        size = canvas.get_width_height()
-        renderer = canvas.get_renderer()
-        raw_data = renderer.tostring_rgb()
-        self.surf = pygame.image.fromstring(raw_data, size, "RGB")
-
 class Bin(BaseSprite):
     """
     A simple bin sprite. It will be used to delete decrees.
@@ -217,8 +171,6 @@ class Bin(BaseSprite):
         self.area = self.screen.get_rect()
         self.size = self.image.get_size()
         self.rect.center = position
-
-
 
 
 
