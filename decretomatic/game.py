@@ -43,7 +43,7 @@ class People():
         valid_factors = []
         for i, j, k in self.decrees.get_valid_indeces():
             valid_factors.append(self.decrees.factors[i][j][k])
-        standard_factor = float(3.0 + self.extra_factor + float(random.randint(0,10))*0.1)
+        standard_factor = float(3.8 + self.extra_factor + float(random.randint(0,10))*0.02)
         decrees_factor = sum(valid_factors)
         if decrees_factor+standard_factor<=1: self.extra_factor+=0.1
         self.t_new_sick_ppl += int(0.5+(self.sick_ppl+self.t_new_sick_ppl) * (max(0.0, (decrees_factor + standard_factor)-1.0)))
@@ -117,7 +117,8 @@ class Game():
         self.decrees = Decrees(self.screen)
         self.people = People(self.screen, self.decrees)
         #self.graph = Graph(self.sick_ppls, self.days)
-        self.line_graph = LineGraph(self.sick_ppls, self.days)
+        self.line_graph_lin = LineGraph(self.sick_ppls, self.days, WIDTH*0.05,HEIGHT*0.7,0)
+        self.line_graph_log = LineGraph(self.sick_ppls, self.days, WIDTH*0.3,HEIGHT*0.7,1)
 
         self.sprites = pygame.sprite.LayeredUpdates()
         self.sprites.add(self.mask, layer = 4)
@@ -126,7 +127,8 @@ class Game():
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.w3, layer = 1)
         self.sprites.add(self.bin, layer = 1)
-        self.sprites.add(self.line_graph, layer = 4)
+        self.sprites.add(self.line_graph_lin, layer = 4)
+        self.sprites.add(self.line_graph_log, layer = 4)
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
