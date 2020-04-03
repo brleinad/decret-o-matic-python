@@ -105,7 +105,7 @@ class LineGraph(BaseSprite):#, future_gui.LineGraph):
             if self.log:       
                 if i>0: y_0=height - height*(log10(self.sick_ppls[i-1])/log10(MAX_SICK_PPL*1.1))
                 y = height - height*(log10(self.sick_ppls[i])/log10(MAX_SICK_PPL*1.1))
-                dy=height - height*(self.sick_ppls[i]-self.sick_ppls[i-1])/(1.8*self.sick_ppls[i-1])
+                dy=height - height*(self.sick_ppls[i]-self.sick_ppls[i-1])/(1.6*self.sick_ppls[i-1])
             else:
                 if i>0: y_0=height - height*((self.sick_ppls[i-1])/(MAX_SICK_PPL*1.1))
                 y = height - height*((self.sick_ppls[i])/(MAX_SICK_PPL*1.1))
