@@ -254,7 +254,13 @@ class Game():
         if self.day == LAST_DAY:
             if self.sick_ppls[-1] > MAX_SICK_PPL:
                 self.lost_game
-
+		
+        if self.sick_ppls[-1] > MAX_SICK_PPL:
+            self.lost_game
+         	
+        if self.day == LAST_DAY:
+            self.win_game
+			
     def get_day(self):
         return self.day
 

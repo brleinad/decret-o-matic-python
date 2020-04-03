@@ -95,10 +95,10 @@ class LineGraph(BaseSprite):#, future_gui.LineGraph):
         
         for i in range(len(self.days)): #range(LAST_DAY):
             #x = origin_x + self.days[i]*width/14
-            x = self.days[i]*width/14
+            x = self.days[i]*width/(LAST_DAY+1.)
             #y = height - height*log10(self.sick_ppls[i]*10/MAX_SICK_PPL)
             #TODO: figure out a better scale
-            y = height - height*(self.sick_ppls[i]/MAX_SICK_PPL)
+            y = height - height*(self.sick_ppls[i]/(MAX_SICK_PPL*1.1))
             x, y = (int(x), int(y))
 
             pygame.draw.rect(self.image, color3, (x-2, y-2, 4, 4), 0) 
