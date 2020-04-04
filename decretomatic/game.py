@@ -11,7 +11,7 @@ from .decrees import Decrees
 from .future_gui import Rectangle
 
 #TODOs: 
-#game over screen
+#improve game over screen 
 #new game option,
 #Change fonts
 #Use sprite sheets
@@ -64,6 +64,7 @@ class Game():
 
     game_over = False
     game_lost = False
+    first_game = True
 
     def __init__(self):
         #pygame.mixer.pre_init()
@@ -163,12 +164,12 @@ class Game():
         lost_menu_config = menu_config.copy()
         lost_menu_config['title'] = 'Hai Perso'
         self.lost_menu = pygameMenu.Menu(**lost_menu_config)
-        self.lost_menu.add_option('Gioca di Nuovo', pygameMenu.events.CLOSE)
+        self.lost_menu.add_option('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
 
         won_menu_config = menu_config.copy()
         won_menu_config['title'] = 'Hai Vinto!'
         self.won_menu = pygameMenu.Menu(**won_menu_config)
-        self.won_menu.add_option('Gioca di Nuovo', pygameMenu.events.CLOSE)
+        self.won_menu.add_option('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
 
 
 
@@ -314,7 +315,8 @@ class Game():
             self.clock.tick(self.FPS)
             fs = time.time()
             events = pygame.event.get()
-            if self.menu.is_enabled():
+
+            if self.menu.is_enabled(): # and self.first_game:
                 self.menu.mainloop(events)
             else:
                 self.events(events)
@@ -323,14 +325,18 @@ class Game():
                 self.update_day()
                 self.render()
 
-            if self.game_over:
-                self.__init__()
-                if self.game_lost:
-                    self.menu =  self.lost_menu
-                else:
-                    self.menu =  self.won_menu
-                self.game_over = False
-                self.game_lost = False
+                if self.game_over:
+                    #self.__init__()
+                    self.first_game = False
+                    if self.game_lost:
+                        self.menu =  self.lost_menu
+                        #self.lost_menu.mainloop(events)
+                    else:
+                        self.menu =  self.won_menu
+                        #self.won_menu.mainloop(events)
+                    self.game_over = False
+                    self.game_lost = False
+
             pygame.display.flip()
 
         pygame.quit()
