@@ -2,6 +2,7 @@ import time
 import random
 import pygame
 from pygame.locals import *
+import pygameMenu
 
 from .constants import *
 from .sprites import Wheel, Mask, Bin
@@ -10,13 +11,12 @@ from .decrees import Decrees
 from .future_gui import Rectangle
 
 #TODOs: 
-#Highight decree to be deleted
 #game over screen
 #new game option,
 #Change fonts
-#Use sprite sheet at the end of rotate
-#improve gui with future gui
+#Use sprite sheets
 #highlight buttons when mouse hovers 
+#variable scale on the line graph
 
 class People():
     """
@@ -139,6 +139,26 @@ class Game():
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
         self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
 
+
+        menu_config = {}
+
+        menu_config['surface'] = self.screen
+        menu_config['window_width'] =  WIDTH
+        menu_config['window_height'] = HEIGHT
+        menu_config['font'] = 'Monospace' #self.title_font
+        menu_config['title'] = 'Decret-O-Matic'
+        menu_config['mouse_enabled'] = True
+        menu_config['dopause'] = False
+        #menu_config['onclose'] = pygameMenu.events.DISABLE_CLOSE
+        menu_config['onclose'] = pygameMenu.events.CLOSE
+
+        self.menu = pygameMenu.Menu(**menu_config)
+        #self.menu.add_option('Spegni', pygameMenu.events.EXIT)        # Adds exit function
+        #self.menu.add_option('Chiudi', pygameMenu.events.DISABLE_CLOSE)
+        self.menu.add_option('Gioca', pygameMenu.events.CLOSE)
+
+
+
     def update_day(self):
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', False, color['GREY'])
         
@@ -167,6 +187,8 @@ class Game():
         """
 
         for event in events:
+            #if event.type == pygameMenu.events.EXIT:
+                #self.menu.disable()
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == KEYDOWN:
@@ -231,6 +253,9 @@ class Game():
         """
         Do all the rendering and displaying of sprites and what not.
         """
+        #if self.menu.is_enabled():
+            #self.menu.draw()
+        #else:
         self.screen.blit(self.background, (0, 0))
         self.sprites.draw(self.screen)
         #self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
@@ -274,13 +299,15 @@ class Game():
         while self.running:
             self.clock.tick(self.FPS)
             fs = time.time()
-            #self.render()
             events = pygame.event.get()
-            self.events(events)
-            self.sprites.update()
-            self.people.update()
-            self.update_day()
-            self.render()
+            if self.menu.is_enabled():
+                self.menu.mainloop(events)
+            else:
+                self.events(events)
+                self.sprites.update()
+                self.people.update()
+                self.update_day()
+                self.render()
             pygame.display.flip()
 
         pygame.quit()
