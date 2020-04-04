@@ -62,6 +62,9 @@ class Game():
     FLAGS = 0
     FPS = 30
 
+    game_over = False
+    game_lost = False
+
     def __init__(self):
         #pygame.mixer.pre_init()
         pygame.init()
@@ -157,6 +160,16 @@ class Game():
         #self.menu.add_option('Chiudi', pygameMenu.events.DISABLE_CLOSE)
         self.menu.add_option('Gioca', pygameMenu.events.CLOSE)
 
+        lost_menu_config = menu_config.copy()
+        lost_menu_config['title'] = 'Hai Perso'
+        self.lost_menu = pygameMenu.Menu(**lost_menu_config)
+        self.lost_menu.add_option('Gioca di Nuovo', pygameMenu.events.CLOSE)
+
+        won_menu_config = menu_config.copy()
+        won_menu_config['title'] = 'Hai Vinto!'
+        self.won_menu = pygameMenu.Menu(**won_menu_config)
+        self.won_menu.add_option('Gioca di Nuovo', pygameMenu.events.CLOSE)
+
 
 
     def update_day(self):
@@ -180,7 +193,6 @@ class Game():
             self.actions = 0
             self.next_day()
 
-        
     def events(self, events):
         """
         Standard event loop.
@@ -273,20 +285,22 @@ class Game():
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
-        #self.graph.update() #TODO: do for cool graphs
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
         self.decree2delete_index = -1
         self.decrees.selected_decree_index = -1
 
         if self.day == LAST_DAY:
             if self.sick_ppls[-1] > MAX_SICK_PPL:
-                self.lost_game
+                self.game_over = True
+                self.game_lost = True
 		
         if self.sick_ppls[-1] > MAX_SICK_PPL:
-            self.lost_game
+            self.game_over = True
+            self.game_lost = True
          	
         if self.day == LAST_DAY:
-            self.win_game
+            self.game_over = True
+            self.game_lost = False
 			
     def get_day(self):
         return self.day
@@ -308,6 +322,15 @@ class Game():
                 self.people.update()
                 self.update_day()
                 self.render()
+
+            if self.game_over:
+                self.__init__()
+                if self.game_lost:
+                    self.menu =  self.lost_menu
+                else:
+                    self.menu =  self.won_menu
+                self.game_over = False
+                self.game_lost = False
             pygame.display.flip()
 
         pygame.quit()
