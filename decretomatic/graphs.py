@@ -84,7 +84,8 @@ class LineGraph(BaseSprite):#, future_gui.LineGraph):
     def update(self):
 
         width, height = self.rect.size
-        
+        #height*=0.9
+		
         color1 = self.color
         color2 = (0, 80, 110, 128)
         color3 = (255, 190, 50, 255)
@@ -98,31 +99,36 @@ class LineGraph(BaseSprite):#, future_gui.LineGraph):
         for i in range(len(self.days)): #range(LAST_DAY):
             #x = origin_x + self.days[i]*width/14
             x_0=0
-            y_0=height
             dy=height
             if i>0:
                 x_0=self.days[i-1]*width/(LAST_DAY+1.)
-            if self.log:       
-                if i>0: y_0=height - height*(log10(self.sick_ppls[i-1])/log10(MAX_SICK_PPL*1.1))
-                y = height - height*(log10(self.sick_ppls[i])/log10(MAX_SICK_PPL*1.1))
-                dy=height - height*(self.sick_ppls[i]-self.sick_ppls[i-1])/(1.6*self.sick_ppls[i-1])
+            if self.log:
+                y = height *(1.0 - (log10(self.sick_ppls[i])/log10(MAX_SICK_PPL)))
+                y_0=y
+                if i>0:
+                    y_0=height*(1.0 - (log10(self.sick_ppls[i-1])/log10(MAX_SICK_PPL)))
+                    dy=height *(1.0 - (self.sick_ppls[i]-self.sick_ppls[i-1])/(1.6*self.sick_ppls[i-1]))
             else:
-                if i>0: y_0=height - height*((self.sick_ppls[i-1])/(MAX_SICK_PPL*1.1))
-                y = height - height*((self.sick_ppls[i])/(MAX_SICK_PPL*1.1))
+                y = height * (1.0 - ((self.sick_ppls[i])/(MAX_SICK_PPL)))
+                y_0=y
+                if i>0: y_0=height * (1.0 - (self.sick_ppls[i-1])/(MAX_SICK_PPL))
             #dy=height - height*(log10(self.sick_ppls[i]-self.sick_ppls[i-1])/log10(MAX_SICK_PPL*.0005))
             
             x = self.days[i]*width/(LAST_DAY+1.)
-            #y = height - height*log10(self.sick_ppls[i]*10/MAX_SICK_PPL)
+			#y = height - height*log10(self.sick_ppls[i]*10/MAX_SICK_PPL)
             #TODO: figure out a better scale
-            x, y = (int(x), int(y))
+			
+			
+            x, y, y_0, dy = (int(x), int(0.9*y), int(0.9*y_0), int(0.9*dy))
 
             pygame.draw.rect(self.image, color3, (x-2, y-2, 4, 4), 0) 
-            pygame.draw.rect(self.image, color4, (x+2, height, 6, dy), 0) 
             #pygame.draw.rect(self.image, color3, (self.days[i]-2, self.sick_ppls[i]-2, 4, 4), 0) 
             #pygame.gfxdraw.circle(self.image, color1, (x, y), 10, 1) 
             pygame.gfxdraw.aacircle(self.image, x, y, 10, color1) 
             #pygame.gfxdraw.aacircle(self.image, self.days[i], self.sick_ppls[i], 10, color1) 
             pygame.draw.lines(self.image, color3, False, ((x_0,y_0),(x,y)), 1)
+            if self.log and i>0: pygame.draw.rect(self.image, color4, (x-width/(LAST_DAY+1.0)/2, height*0.9, width/(LAST_DAY+1.0), dy), 1) 
+            
 
     def draw_border(self, surface, rect, color, border=True, corners=True, other=False):
         
