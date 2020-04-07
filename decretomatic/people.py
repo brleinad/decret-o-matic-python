@@ -1,6 +1,6 @@
-import random
-from .constants import *
 import pygame
+import random
+from .locals import *
 from .decrees import Decrees
 
 

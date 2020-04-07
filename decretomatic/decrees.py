@@ -3,7 +3,7 @@ import random
 import pprint
 
 #from .sprite import Delete
-from .constants import *
+from .locals import *
 
 class Decrees():
     """

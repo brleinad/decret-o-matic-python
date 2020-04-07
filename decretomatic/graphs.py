@@ -7,7 +7,7 @@ import pylab
 
 from .sprites import BaseSprite
 from . import future_gui
-from .constants import *
+from .locals import *
 import pygame.gfxdraw
 from math import log10
 

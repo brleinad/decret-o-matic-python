@@ -4,7 +4,7 @@ import pygame
 from pygame.locals import *
 import pygameMenu
 
-from .constants import *
+from .locals import *
 from .sprites import Wheel, Mask, Bin
 from .graphs import Graph, LineGraph, BarGraph
 from .decrees import Decrees
@@ -12,11 +12,14 @@ from .people import People
 from .future_gui import Rectangle
 
 #TODOs: 
-#improve game over screen 
+#improve menu
 #Change fonts
-#Use sprite sheets
+#Use sprite sheets for wheels
 #highlight buttons when mouse hovers 
 #variable scale on the line graph
+#max number of decrees
+#make decree list pretty
+#create an exe
 
 
 class Game():
