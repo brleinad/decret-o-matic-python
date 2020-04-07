@@ -57,7 +57,7 @@ class Decrees():
                 self.factors[4][j][k]=-self.factors[3][j][k]
                 self.factors[6][j][k]=-self.factors[5][j][k]
 
-        pprint.pprint(self.factors)
+        #pprint.pprint(self.factors)
         self.decrees_font = pygame.font.SysFont('Monospace', 12)
         self.selected_decrees_font = pygame.font.SysFont('Monospace', 12, bold=True)
 

@@ -148,23 +148,76 @@ class Mask(BaseSprite):
     Represents the mask that goes on top of the wheels.
     """
     layer = 2
+    images = {}
     def __init__(self, position):
         BaseSprite.__init__(self)
-        self.image, self.rect = self.load_image('mask_z.png', TRANSPARENT)
+        self.images['active'], self.rect = self.load_image('mask_z_click.png', TRANSPARENT)
+        self.images['nonactive'], self.rect = self.load_image('mask_z.png', TRANSPARENT)
+        self.image = self.images['nonactive']
         self.size = self.image.get_size()
         self.rect.center = position
         self.button_rect = pygame.Rect((229,365), (self.rect.width, 50))
+
+        self.active = False
+        self.active_counter = 0
+
+    def update(self):
+        #if self.active:
+        #    if self.active_counter > 10:
+        #        self.active = False
+        #        self.active_counter = 0
+        #        self.image = self.images['nonactive']
+        #    self.active_counter += 1
+        pass
+
+    def activate(self):
+        self.image = self.images['active']
+        self.active = True
+
+    def deactivate(self):
+        self.image = self.images['nonactive']
+        self.active = False
+
 
 
 class Bin(BaseSprite):
     """
     A simple bin sprite. It will be used to delete decrees.
     """
+    images = {}
     def __init__(self, position):
         BaseSprite.__init__(self)
-        self.image, self.rect = self.load_image('bin_s.png', TRANSPARENT)
+        self.sprite_sheet, self.rect_sheet = self.load_image('bin.png', TRANSPARENT)
+        #print(f'BOB BIN SIZE is {self.size}')
+
+        width, height = (30, 35)
+        self.images['closed'] = self.sprite_sheet.subsurface(self.rect_sheet.left, self.rect_sheet.top, width, self.rect_sheet.height)
+        self.images['open'] = self.sprite_sheet.subsurface(self.rect_sheet.left + width, self.rect_sheet.top, width, self.rect_sheet.height)
+
+        self.image = self.images['closed']
+        self.rect = self.image.get_rect()
         self.size = self.image.get_size()
         self.rect.center = position
+
+        self.open = False
+        self.close_counter = 0
+
+    def update(self):
+        #if self.open:
+        #    if self.close_counter > 10:
+        #        self.open = False
+        #        self.close_counter = 0
+        #        self.image = self.images['closed']
+        #    self.close_counter += 1
+        pass
+
+    def open_bin(self):
+        self.image = self.images['open']
+        self.open = True
+
+    def close_bin(self):
+        self.image = self.images['closed']
+        self.open = False
 
 
 
