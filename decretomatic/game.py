@@ -141,6 +141,7 @@ class Game():
         """
         Update the list of valid decrees made by the player.
         """
+        updated = 0
         decree_index = (
                 self.w1.decree_index, 
                 self.w2.decree_index, 
@@ -150,11 +151,12 @@ class Game():
         if self.decrees.add_valid_decree(decree_index):
             self.actions += 1
             self.decrees.update_decrees_text()
-
+            updated=1
+			
         if self.actions >= MAX_ACTIONS:
             self.actions = 0
             self.next_day()
-
+        return updated
     def events(self, events):
         """
         Standard event loop.
@@ -183,7 +185,7 @@ class Game():
                 if self.bin.rect.collidepoint(event.pos):
                     self.bin.open_bin()
                 elif self.mask.button_rect.collidepoint(event.pos):
-                    self.mask.activate()
+                    0#self.mask.activate()
                 else:
                     self.mask.deactivate()
                     self.bin.close_bin()
@@ -202,7 +204,8 @@ class Game():
                     if event.button==3: self.w3.prev_decree()
                     #print(f'W3: {self.w3.rect.center} -> {event.pos}')
                 elif self.mask.button_rect.collidepoint(event.pos):
-                    self.update_decrees()
+                    #self.mask.activate()
+                    if self.update_decrees() == 1: self.mask.activate()
                 elif self.day_button_rect.collidepoint(event.pos):
                     self.next_day()
                 elif self.bin.rect.collidepoint(event.pos):
