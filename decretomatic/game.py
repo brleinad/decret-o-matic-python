@@ -78,9 +78,9 @@ class Game():
         #W3: (518, 239) -> (540, 231)
         w3_button_pos = (mask_topleft_x + 313, mask_topleft_y + 58)
 
-        self.w1 = Wheel('w1_z.png', (w1_x, w1_y), w1_button_pos)
-        self.w2 = Wheel('w2_z.png', (w2_x, w2_y), w2_button_pos)
-        self.w3 = Wheel('w3_z.png', (w3_x, w3_y), w3_button_pos)
+        self.w1 = Wheel('w1_t.png', (w1_x, w1_y), w1_button_pos)
+        self.w2 = Wheel('w2_t.png', (w2_x, w2_y), w2_button_pos)
+        self.w3 = Wheel('w3_t.png', (w3_x, w3_y), w3_button_pos)
 
         self.decrees = Decrees(self.screen)
         self.people = People(self.screen, self.decrees)

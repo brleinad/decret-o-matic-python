@@ -5,6 +5,11 @@ from pygame.locals import RLEACCEL
 
 SCALE_FACTOR = 1 #2.5 #for imagees that are too big
 TRANSPARENT = (1, 0, 0)
+WHEEL_NUM_OPTIONS = 7
+WHEEL_BUTTON_SIZE = (100, 40)
+MASK_BUTTON_POSITION = (229, 365)
+MASK_BUTTON_HEIGHT = 50
+BIN_SIZE = (30, 35)
 
 
 class BaseSprite(pygame.sprite.Sprite):
@@ -48,41 +53,62 @@ class Wheel(BaseSprite):
     Generic class to represent the three wheels.
     """
     layer = 1
+
     def __init__(self, image, position = (0, 0), button_position = (0, 0)):
         self.image_name = image
         BaseSprite.__init__(self)
 
-#W1: (255, 237) -> (278, 232)
-#W1: (255, 237) -> (277, 247)
-#W1: (255, 237) -> (375, 231)
-#W1: (255, 237) -> (375, 247)
-        button_width = 100
-        button_height = 40
-        self.button_rect = pygame.Rect((button_position), (button_width, button_height))
+        self.button_rect = pygame.Rect((button_position), WHEEL_BUTTON_SIZE)
         self.button_rect.topleft = button_position
 
-        self.image, self.rect = self.load_image(image, TRANSPARENT)
+        self.sprites_image, self.sprites_rect = self.load_image(image, TRANSPARENT)
+
+        left = self.sprites_rect.left
+        top = self.sprites_rect.top
+        width = self.sprites_rect.width / WHEEL_NUM_OPTIONS
+        height = self.sprites_rect.height
+
+
+        self.images = [None for i in range(WHEEL_NUM_OPTIONS)]
+        for i in range(WHEEL_NUM_OPTIONS):
+            self.images[i] = self.sprites_image.subsurface(left, top, width, height)
+            left += width
+            print(f'Left for image {image} is {left}')
+
+        #self.image, self.rect = self.load_image(image, TRANSPARENT)
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+
         self.size = self.image.get_size()
-        #self.image = pygame.transform.scale(self.image, (int(self.size[0]//SCALE_FACTOR), int(self.size[1]//SCALE_FACTOR)))
-        #self.size = self.image.get_size()
-        #self.rect = self.image.get_rect()
+        print(f'SIZE is {self.size}')
         self.rect.center = position
-        print(self.rect.center)
+        self.position = position
 
         self.spinning = 0
         self.spins = 0
         self.initial_image = self.image.copy()
         self.decree_index = 0
 
+    def _update_image(self):
+        """
+        Set the image from the sprite sheet.
+        """
+        self.image = self.images[self.spins] #self.decree_index]
+        self.rect = self.image.get_rect()
+        self.rect.center = self.position
+        print('Updated image')
+
     def update(self):
         """
         Spin or stay.
         """
+        self.decree_index = self.spins
         if self.spinning >=1:
             self._spin()
         elif self.spinning <= -1:
             self._aspin()
-        self.decree_index = self.spins
+        #else:
+            #self._update_image()
 
     def _spin(self):
         """
@@ -91,21 +117,20 @@ class Wheel(BaseSprite):
         center = self.rect.center
         self.spinning += 4
 
-        if self.spinning > 51.43:
+        if self.spinning > 360.0/WHEEL_NUM_OPTIONS:
             self.spinning = 0
             self.spins += 1
-
-        if self.spins > 6:
-            #self.image, self.rect = self.load_image(self.image_name, TRANSPARENT)
-            self.image = self.initial_image.copy()
-            self.spins = 0
+            if self.spins > WHEEL_NUM_OPTIONS - 1:
+                #self.image = self.initial_image.copy()
+                #self.image = self.images[0]
+                self.spins = 0
+            self._update_image()
         else:
-            rotation_angle = 51.43 * self.spins + self.spinning
+            rotation_angle = 360.0/WHEEL_NUM_OPTIONS * self.spins + self.spinning
             self.image = pygame.transform.rotate(self.initial_image, rotation_angle)
-            #print(self.spins)
-
-        self.rect = self.image.get_rect(center = center)
-
+            self.rect = self.image.get_rect(center = center)
+            self.rect.center = center
+            
     def _aspin(self):
         """
         Spin the wheel anticlockwise.
@@ -113,20 +138,17 @@ class Wheel(BaseSprite):
         center = self.rect.center
         self.spinning -= 4
 
-        if self.spinning < -51.43:
+        if self.spinning < -360.0/WHEEL_NUM_OPTIONS:
             self.spinning = 0
             self.spins -= 1
-
-        if self.spins == 0:
-            #self.image, self.rect = self.load_image(self.image_name, TRANSPARENT)
-            self.image = self.initial_image.copy()
-            self.spins = 6
+            if self.spins == 0:
+                self.image = self.initial_image.copy()
+                self.spins = WHEEL_NUM_OPTIONS - 1
+            self._update_image()
         else:
-            rotation_angle = 51.43 * self.spins + self.spinning
+            rotation_angle = 360.0/WHEEL_NUM_OPTIONS * self.spins + self.spinning
             self.image = pygame.transform.rotate(self.initial_image, rotation_angle)
-            #print(self.spins)
-
-        self.rect = self.image.get_rect(center = center)
+            self.rect = self.image.get_rect(center = center)
 
     def next_decree(self):
         """
@@ -156,7 +178,7 @@ class Mask(BaseSprite):
         self.image = self.images['nonactive']
         self.size = self.image.get_size()
         self.rect.center = position
-        self.button_rect = pygame.Rect((229,365), (self.rect.width, 50))
+        self.button_rect = pygame.Rect(MASK_BUTTON_POSITION, (self.rect.width, MASK_BUTTON_HEIGHT))
 
         self.active = False
         self.active_counter = 0
@@ -190,7 +212,7 @@ class Bin(BaseSprite):
         self.sprite_sheet, self.rect_sheet = self.load_image('bin.png', TRANSPARENT)
         #print(f'BOB BIN SIZE is {self.size}')
 
-        width, height = (30, 35)
+        width, height = BIN_SIZE
         self.images['closed'] = self.sprite_sheet.subsurface(self.rect_sheet.left, self.rect_sheet.top, width, self.rect_sheet.height)
         self.images['open'] = self.sprite_sheet.subsurface(self.rect_sheet.left + width, self.rect_sheet.top, width, self.rect_sheet.height)
 
@@ -218,6 +240,3 @@ class Bin(BaseSprite):
     def close_bin(self):
         self.image = self.images['closed']
         self.open = False
-
-
-
