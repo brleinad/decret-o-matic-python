@@ -105,7 +105,10 @@ class Wheel(BaseSprite):
         """
         Set the image from the sprite sheet.
         """
-        self.image = self.images[self.spins] #self.decree_index]
+        index=self.spins
+        if index<0: index+=7
+        if index>6: index-=7
+        self.image = self.images[index] #self.decree_index]
         self.rect = self.image.get_rect()
         self.rect.center = self.position
         print('Updated image')

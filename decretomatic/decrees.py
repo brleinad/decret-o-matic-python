@@ -69,11 +69,20 @@ class Decrees():
         """
         Given a decree index touple it will add the corresponding decree to a list.
         """
-        if self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]]:
+        index_1=decree_index[0]
+        if index_1<0: index_1+=7
+        if index_1>6: index_1-=7
+        index_2=decree_index[1]
+        if index_2<0: index_2+=7
+        if index_2>6: index_2-=7
+        index_3=decree_index[2]
+        if index_3<0: index_3+=7
+        if index_3>6: index_3-=7
+        if self.valid_decrees[index_1][index_2][index_3]:
             return False
         #return self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]]
-        self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]] = \
-            self.decrees[decree_index[0]][decree_index[1]][decree_index[2]]
+        self.valid_decrees[index_1][index_2][index_3] = \
+            self.decrees[index_1][index_2][index_3]
         return True
 
     def delete_valid_decree(self, decree_index):
@@ -120,8 +129,8 @@ class Decrees():
 
     def get_factor(self): 
         max_power = 10.0
-        fix_power = 2.0
-        exp_power = 1.4
+        fix_power = 2.5
+        exp_power = 1.5
         max_good_bad = 10.0
         good_bad_thresh = 4.0
 
