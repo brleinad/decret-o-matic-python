@@ -20,9 +20,19 @@ from .future_gui import Rectangle
 #max number of decrees
 #make decree list pretty
 #create an exe
+#Tell user when:
+#decree has already been created
+#decrees cannot be deleted anymore
+#Make it more obvious when the days pass
+
+LEFT_MOUSEBUTTON = 1
+RIGHT_MOUSEBUTTON = 3
 
 
 class Game():
+    """
+    The main class instantiating all the sprite, controlling all the events, etc.
+    """
     FLAGS = 0
     FPS = 30
 
@@ -188,24 +198,28 @@ class Game():
                 if self.bin.rect.collidepoint(event.pos):
                     self.bin.open_bin()
                 elif self.mask.button_rect.collidepoint(event.pos):
-                    0#self.mask.activate()
+                    #self.mask.activate()
+                    pass
                 else:
                     self.mask.deactivate()
                     self.bin.close_bin()
             elif event.type == MOUSEBUTTONDOWN:
                 print(f'Mouse at {event.pos}')
                 if self.w1.button_rect.collidepoint(event.pos):
-                    if event.button==1: self.w1.next_decree()
-                    if event.button==3: self.w1.prev_decree()
-                    #print(f'W1: {self.w1.rect.center} -> {event.pos}')
+                    if event.button == LEFT_MOUSEBUTTON: 
+                        self.w1.next_decree()
+                    elif event.button == RIGHT_MOUSEBUTTON: 
+                        self.w1.prev_decree()
                 elif self.w2.button_rect.collidepoint(event.pos):
-                    if event.button==1: self.w2.next_decree()
-                    if event.button==3: self.w2.prev_decree()
-                    #print(f'W2: {self.w2.rect.center} -> {event.pos}')
+                    if event.button == LEFT_MOUSEBUTTON: 
+                        self.w2.next_decree()
+                    elif event.button == RIGHT_MOUSEBUTTON: 
+                        self.w2.prev_decree()
                 elif self.w3.button_rect.collidepoint(event.pos):
-                    if event.button==1: self.w3.next_decree()
-                    if event.button==3: self.w3.prev_decree()
-                    #print(f'W3: {self.w3.rect.center} -> {event.pos}')
+                    if event.button == LEFT_MOUSEBUTTON: 
+                        self.w3.next_decree()
+                    elif event.button == RIGHT_MOUSEBUTTON: 
+                        self.w3.prev_decree()
                 elif self.mask.button_rect.collidepoint(event.pos):
                     #self.mask.activate()
                     if self.update_decrees() == 1: self.mask.activate()

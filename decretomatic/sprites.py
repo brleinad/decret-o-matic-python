@@ -10,6 +10,9 @@ WHEEL_BUTTON_SIZE = (100, 40)
 MASK_BUTTON_POSITION = (229, 365)
 MASK_BUTTON_HEIGHT = 50
 BIN_SIZE = (30, 35)
+CLOCKWISE = 1
+ANTICLOCKWISE = -1
+SPIN_ANGLE = 4
 
 
 class BaseSprite(pygame.sprite.Sprite):
@@ -70,17 +73,16 @@ class Wheel(BaseSprite):
 
 
         self.images = [None for i in range(WHEEL_NUM_OPTIONS)]
-        for i in range(WHEEL_NUM_OPTIONS):
+        self.images[0] = self.sprites_image.subsurface(left, top, width, height)
+        left = self.sprites_rect.width - width #UBBI ha fatto lo sprite al contrario
+        for i in range(1, WHEEL_NUM_OPTIONS):
             self.images[i] = self.sprites_image.subsurface(left, top, width, height)
-            left += width
-            print(f'Left for image {image} is {left}')
+            left -= width
 
-        #self.image, self.rect = self.load_image(image, TRANSPARENT)
         self.image = self.images[0]
         self.rect = self.image.get_rect()
 
         self.size = self.image.get_size()
-        print(f'SIZE is {self.size}')
         self.rect.center = position
         self.position = position
 
@@ -88,6 +90,16 @@ class Wheel(BaseSprite):
         self.spins = 0
         self.initial_image = self.image.copy()
         self.decree_index = 0
+
+    def update(self):
+        """
+        Spin or stay.
+        """
+        self.decree_index = self.spins
+        if self.spinning >= 1:
+            self._spin(CLOCKWISE)
+        elif self.spinning <= -1:
+            self._spin(ANTICLOCKWISE)
 
     def _update_image(self):
         """
@@ -98,31 +110,23 @@ class Wheel(BaseSprite):
         self.rect.center = self.position
         print('Updated image')
 
-    def update(self):
-        """
-        Spin or stay.
-        """
-        self.decree_index = self.spins
-        if self.spinning >=1:
-            self._spin()
-        elif self.spinning <= -1:
-            self._aspin()
-        #else:
-            #self._update_image()
-
-    def _spin(self):
+    def _spin(self, direction):
         """
         Spin the wheelclockwise.
         """
         center = self.rect.center
-        self.spinning += 4
+        self.spinning += SPIN_ANGLE * direction
 
-        if self.spinning > 360.0/WHEEL_NUM_OPTIONS:
+        #finished_spinning = True
+        if direction == CLOCKWISE:
+            finished_spinning = self.spinning >  360.0/WHEEL_NUM_OPTIONS
+        elif direction == ANTICLOCKWISE:
+            finished_spinning = self.spinning < -360.0/WHEEL_NUM_OPTIONS
+
+        if finished_spinning:
             self.spinning = 0
-            self.spins += 1
+            self.spins += direction
             if self.spins > WHEEL_NUM_OPTIONS - 1:
-                #self.image = self.initial_image.copy()
-                #self.image = self.images[0]
                 self.spins = 0
             self._update_image()
         else:
@@ -130,25 +134,6 @@ class Wheel(BaseSprite):
             self.image = pygame.transform.rotate(self.initial_image, rotation_angle)
             self.rect = self.image.get_rect(center = center)
             self.rect.center = center
-            
-    def _aspin(self):
-        """
-        Spin the wheel anticlockwise.
-        """
-        center = self.rect.center
-        self.spinning -= 4
-
-        if self.spinning < -360.0/WHEEL_NUM_OPTIONS:
-            self.spinning = 0
-            self.spins -= 1
-            if self.spins == 0:
-                self.image = self.initial_image.copy()
-                self.spins = WHEEL_NUM_OPTIONS - 1
-            self._update_image()
-        else:
-            rotation_angle = 360.0/WHEEL_NUM_OPTIONS * self.spins + self.spinning
-            self.image = pygame.transform.rotate(self.initial_image, rotation_angle)
-            self.rect = self.image.get_rect(center = center)
 
     def next_decree(self):
         """
