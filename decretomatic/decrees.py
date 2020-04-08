@@ -153,7 +153,6 @@ class Decrees():
         text_x, text_y = WIDTH*0.58, HEIGHT*0.1
         self.screen.blit(textsurface,(text_x, text_y))
         word_width, word_height = textsurface.get_size()
-
         for dec_i, dec in self.get_valid_decrees().items():
             #Do actual text
             dec_textsurface = self.decrees_font.render(dec, False, color['GREY'])
@@ -163,9 +162,10 @@ class Decrees():
             text_y += word_height
             self.screen.blit(dec_textsurface,(text_x, text_y))
             #Do delete buttons
-            button_width = 200
+            #button_width = 200
+            button_width, button_height = dec_textsurface.get_size()
             button_height = word_height 
-            self.delete_buttons[dec_i] = pygame.Rect((text_x, text_y), (button_width, button_height))
+            self.delete_buttons[dec_i] = pygame.Rect((text_x, text_y-button_height/2.0), (button_width, button_height))
 
     def get_decree_index(self, decree):
         """

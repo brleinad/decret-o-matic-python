@@ -240,13 +240,14 @@ class Game():
                     for decree_index, delete_button in self.decrees.delete_buttons.items():
                         if delete_button.collidepoint(event.pos) and (self.actions<=MAX_ACTIONS-2 or self.do_delete):
                             #self.decrees.delete_decree(decree_index)
-                            self.do_delete =  not self.do_delete
-                            if self.do_delete:
-                                self.decree2delete_index = decree_index
-                                self.decrees.selected_decree_index = decree_index
-                            else:
+                            if self.decrees.selected_decree_index==decree_index:
+                                self.do_delete =  0							
                                 self.decree2delete_index = -1
                                 self.decrees.selected_decree_index = -1
+                            else:
+                                self.do_delete = 1
+                                self.decree2delete_index = decree_index
+                                self.decrees.selected_decree_index = decree_index
                             #self.update_decree()
 
 
