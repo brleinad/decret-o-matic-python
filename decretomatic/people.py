@@ -34,9 +34,10 @@ class People():
             valid_factors.append(self.decrees.factors[i][j][k])
         standard_factor = float(3.8 + self.extra_factor + float(random.randint(0,10))*0.02)
         decrees_factor = sum(valid_factors)
-        self.new_sick_ppl=0
+        self.new_sick_ppl = 0
         self.t_new_sick_ppl += int(0.5+(self.sick_ppl+self.t_new_sick_ppl) * (max(0.0, (decrees_factor + standard_factor)-1.0)))
-        if self.t_new_sick_ppl==0: self.extra_factor+=max(-(0.5*(decrees_factor-1.0),0.1))
+        if self.t_new_sick_ppl == 0: 
+            self.extra_factor -= max((-(0.5*(decrees_factor-1.0)), 0.1)) #UBBI e' giusto cosi'?
         #print(f'sick people: {self.sick_ppl + self.t_new_sick_ppl} with factor: {decrees_factor} and std: {standard_factor}')
 		
     def update(self):

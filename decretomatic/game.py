@@ -12,18 +12,17 @@ from .people import People
 from .future_gui import Rectangle
 
 #TODOs: 
-#improve menu
-#Change fonts
-#Use sprite sheets for wheels
-#highlight buttons when mouse hovers 
-#variable scale on the line graph
 #max number of decrees
 #make decree list pretty
 #create an exe
 #Tell user when:
-#decree has already been created
-#decrees cannot be deleted anymore
-#Make it more obvious when the days pass
+##decree has already been created
+##decrees cannot be deleted anymore
+##Make it more obvious when the days pass
+#highlight buttons when mouse hovers 
+#variable scale on the line graph
+#improve menu
+#Change fonts
 
 LEFT_MOUSEBUTTON = 1
 RIGHT_MOUSEBUTTON = 3
@@ -145,8 +144,6 @@ class Game():
         self.won_menu = pygameMenu.Menu(**won_menu_config)
         self.won_menu.add_option('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
 
-
-
     def update_day(self):
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', False, color['GREY'])
         
@@ -180,6 +177,7 @@ class Game():
                 #self.menu.disable()
             if event.type == pygame.QUIT:
                 self.running = False
+            # Keyboard keys: not really used in gameplay, only for debugging
             elif event.type == KEYDOWN:
                 if event.key == K_1:
                     self.w1.next_decree()
@@ -194,6 +192,7 @@ class Game():
                 elif event.key == K_RETURN: 
                     #TODO: remove this elif, only for debugging
                     self.next_day()
+            # Mouse hovering stuff
             elif event.type == MOUSEMOTION:
                 if self.bin.rect.collidepoint(event.pos):
                     self.bin.open_bin()
@@ -203,6 +202,7 @@ class Game():
                 else:
                     self.mask.deactivate()
                     self.bin.close_bin()
+            # Mouse clicking
             elif event.type == MOUSEBUTTONDOWN:
                 print(f'Mouse at {event.pos}')
                 if self.w1.button_rect.collidepoint(event.pos):
@@ -235,7 +235,6 @@ class Game():
                         if self.actions >= MAX_ACTIONS:
                             self.actions = 0
                             self.next_day()
-                        #self.update_decrees()
                 else:
                     for decree_index, delete_button in self.decrees.delete_buttons.items():
                         if delete_button.collidepoint(event.pos) and (self.actions<=MAX_ACTIONS-2 or self.do_delete):
@@ -248,8 +247,6 @@ class Game():
                                 self.do_delete = 1
                                 self.decree2delete_index = decree_index
                                 self.decrees.selected_decree_index = decree_index
-                            #self.update_decree()
-
 
     def render(self):
         """

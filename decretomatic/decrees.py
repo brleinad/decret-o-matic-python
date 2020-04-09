@@ -58,7 +58,7 @@ class Decrees():
 
         #pprint.pprint(self.factors)
         self.decrees_font = pygame.font.SysFont('Monospace', 12)
-        self.selected_decrees_font = pygame.font.SysFont('Monospace', 12, bold=True)
+        self.selected_decrees_font = pygame.font.SysFont('Monospace', 10, bold=True)
 
     def print_decs(self):
         pprint.pprint(self.decrees)
@@ -102,6 +102,9 @@ class Decrees():
                         print(self.valid_decrees[i][j][k])
 
     def get_valid_decrees(self):
+        """
+        Returns all the currently valid decrees in a dictionary where keys are the tuple indeces and the values are the decrees.
+        """
         #pprint.pprint(self.valid_decrees)
         valid_decs = []
         valid_indeces = []
@@ -110,13 +113,13 @@ class Decrees():
             for j in range(len(self.valid_decrees[i])):
                 for k in range(len(self.valid_decrees[j])):
                     if self.valid_decrees[i][j][k]:
-                        #valid_decs.append(self.valid_decrees[i][j][k])
-                        #valid_indeces.append((i,j,k))
                         valid_index2decs[(i,j,k)] = self.valid_decrees[i][j][k]
-        #return (valid_indeces, valid_decs)
         return valid_index2decs
 
     def get_valid_indeces(self):
+        """
+        Get all inceces that correspond to valid decrees.
+        """
         valid_indeces = []
         for i in range(len(self.valid_decrees)):
             for j in range(len(self.valid_decrees[i])):
@@ -126,6 +129,9 @@ class Decrees():
         return valid_indeces
 
     def get_factor(self): 
+        """
+        Calculate factors which are then used to calculate the number of sick people.
+        """
         max_power = 10.0
         fix_power = 2.5
         exp_power = 1.5
@@ -148,27 +154,27 @@ class Decrees():
         valid_decrees = 'Decreti\n'
         #valid_decrees += self.decrees.get_valid_decrees_str()
         textsurface = self.title_font.render('Decreti', False, color['GREY'])
-        text_x, text_y = WIDTH*0.58, HEIGHT*0.1
+        text_x, text_y = DECREES_TEXT_POSITION
+        #text_x, text_y = WIDTH*0.58, HEIGHT*0.1
         self.screen.blit(textsurface,(text_x, text_y))
         word_width, word_height = textsurface.get_size()
-        #for dec_i, dec in self.get_valid_decrees().items():
-        for dec_i in self.journal:
 
+        text_y += word_height
+
+        for dec_i in self.journal:
             dec = self.get_valid_decree(dec_i)
-            #=dec = self.valid_decrees[dec_i[0]][dec_i[1]][dec_i[2]]
             
             #Do actual text
             dec_textsurface = self.decrees_font.render(dec, False, color['GREY'])
             if self.selected_decree_index == dec_i:
                 dec_textsurface = self.selected_decrees_font.render(dec, False, color['RED'])
 
-            text_y += word_height
             self.screen.blit(dec_textsurface,(text_x, text_y))
             #Do delete buttons
-            #button_width = 200
             button_width, button_height = dec_textsurface.get_size()
-            button_height = word_height 
+            #button_height = word_height 
             self.delete_buttons[dec_i] = pygame.Rect((text_x, text_y-button_height/2.0), (button_width, button_height))
+            text_y += button_height*DECREES_TEXT_SPACING
 
     def get_decree_index(self, decree):
         """
