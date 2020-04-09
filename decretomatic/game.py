@@ -165,11 +165,11 @@ class Game():
             self.actions += 1
             self.decrees.update_decrees_text()
             updated=1
-			
         if self.actions >= MAX_ACTIONS:
             self.actions = 0
             self.next_day()
         return updated
+
     def events(self, events):
         """
         Standard event loop.
@@ -241,7 +241,7 @@ class Game():
                         if delete_button.collidepoint(event.pos) and (self.actions<=MAX_ACTIONS-2 or self.do_delete):
                             #self.decrees.delete_decree(decree_index)
                             if self.decrees.selected_decree_index==decree_index:
-                                self.do_delete =  0							
+                                self.do_delete =  0
                                 self.decree2delete_index = -1
                                 self.decrees.selected_decree_index = -1
                             else:
@@ -283,15 +283,13 @@ class Game():
             if self.sick_ppls[-1] > MAX_SICK_PPL:
                 self.game_over = True
                 self.game_lost = True
-		
         if self.sick_ppls[-1] > MAX_SICK_PPL:
             self.game_over = True
             self.game_lost = True
-         	
         if self.day == LAST_DAY:
             self.game_over = True
             self.game_lost = False
-			
+
     def get_day(self):
         return self.day
 

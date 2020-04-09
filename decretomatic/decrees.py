@@ -46,11 +46,10 @@ class Decrees():
 
 
         self.decrees = [[[' '.join((dec1, dec2, dec3)) for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
-
         self.valid_decrees = [[['' for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
-		
         self.factors = [[[self.get_factor() for dec3 in self.w3_decs] for dec2 in self.w2_decs] for dec1 in self.w1_decs]
-		
+        self.journal = []
+
         for j in range(7):
             for k in range(7):
                 self.factors[2][j][k]=-self.factors[1][j][k]
@@ -69,20 +68,19 @@ class Decrees():
         """
         Given a decree index touple it will add the corresponding decree to a list.
         """
-        index_1=decree_index[0]
-        if index_1<0: index_1+=7
-        if index_1>6: index_1-=7
-        index_2=decree_index[1]
-        if index_2<0: index_2+=7
-        if index_2>6: index_2-=7
-        index_3=decree_index[2]
-        if index_3<0: index_3+=7
-        if index_3>6: index_3-=7
-        if self.valid_decrees[index_1][index_2][index_3]:
+        corrected_index = [0 for i in range(len(decree_index))]
+        for i in range(len(decree_index)):
+            corrected_index[i] = decree_index[i]
+            if corrected_index[i] < 0: 
+                corrected_index[i] += 7
+            elif corrected_index[i] > 6: 
+                corrected_index[i] -= 7
+
+        if self.valid_decrees[corrected_index[0]][corrected_index[1]][corrected_index[2]]:
             return False
         #return self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]]
-        self.valid_decrees[index_1][index_2][index_3] = \
-            self.decrees[index_1][index_2][index_3]
+        self.valid_decrees[corrected_index[0]][corrected_index[1]][corrected_index[2]] = self.decrees[corrected_index[0]][corrected_index[1]][corrected_index[2]]
+        self.journal.append(tuple(corrected_index))
         return True
 
     def delete_valid_decree(self, decree_index):
@@ -91,9 +89,9 @@ class Decrees():
         """
         if self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]]:
             self.valid_decrees[decree_index[0]][decree_index[1]][decree_index[2]] = ''
+            self.journal.remove(decree_index)
             return True
         return False
-
 
     def print_valid_decrees(self):
         #pprint.pprint(self.valid_decrees)
@@ -153,7 +151,12 @@ class Decrees():
         text_x, text_y = WIDTH*0.58, HEIGHT*0.1
         self.screen.blit(textsurface,(text_x, text_y))
         word_width, word_height = textsurface.get_size()
-        for dec_i, dec in self.get_valid_decrees().items():
+        #for dec_i, dec in self.get_valid_decrees().items():
+        for dec_i in self.journal:
+
+            dec = self.get_valid_decree(dec_i)
+            #=dec = self.valid_decrees[dec_i[0]][dec_i[1]][dec_i[2]]
+            
             #Do actual text
             dec_textsurface = self.decrees_font.render(dec, False, color['GREY'])
             if self.selected_decree_index == dec_i:
@@ -173,6 +176,8 @@ class Decrees():
         """
         pass
 
-
-
-
+    def get_valid_decree(self, index):
+        """
+        Return a valid decree given a valid touple index
+        """
+        return self.valid_decrees[index[0]][index[1]][index[2]]
