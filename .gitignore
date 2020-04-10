@@ -2,3 +2,5 @@
 venv/*
 decretomatic/*bu*
 */*orig
+build/*
+dist/*

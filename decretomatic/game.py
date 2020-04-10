@@ -6,10 +6,9 @@ import pygameMenu
 
 from .locals import *
 from .sprites import Wheel, Mask, Bin
-from .graphs import Graph, LineGraph, BarGraph
+from .graphs import LineGraph, BarGraph
 from .decrees import Decrees
 from .people import People
-from .future_gui import Rectangle
 
 #TODOs: 
 #max number of decrees

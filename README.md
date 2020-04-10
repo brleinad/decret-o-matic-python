@@ -20,3 +20,13 @@ python3 -m venv venv
 pip install -r requirements.txt
 python decreto-o-manic.py
 ```
+
+To generate the executable file first install pyinstaller:
+```
+pip install pysintaller
+```
+Then run pyinstaller using the .spec file.
+```
+pyinstaller --clean decret-o-matic.spec
+```
+and this will create the executable under dist/.

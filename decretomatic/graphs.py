@@ -1,57 +1,12 @@
 import pygame
-import matplotlib
-import matplotlib.pyplot as pyplot
-matplotlib.use("Agg")
-import matplotlib.backends.backend_agg as agg
-import pylab
+import pygame.gfxdraw
 
 from .sprites import BaseSprite
-from . import future_gui
 from .locals import *
-import pygame.gfxdraw
 from math import log10
+ 
 
-class Graph(BaseSprite):
-    """
-    A graph showing number of people that are infected.
-    """
-    sick_ppls = []
-    days = []
-
-    def __init__(self, sick_peoples, days):
-        self.sick_ppls = sick_peoples
-        self.days = days
-
-        self.update()
-
-    def update(self):
-        #pyplot.plot(days, sick_ppl) 
-        #pyplot.xlabel('Giorni') 
-        #pyplot.ylabel('Malati') 
-        #plt.title('') 
-        #plt.show()
-
-        #self.sick_ppls.append(self.sick_ppl)
-        #self.days.append(self.day)
-
-        fig = pylab.figure(figsize=[4, 2], # Inches
-                           dpi=100,        # 100 dots per inch, so the resulting buffer is 400x400 pixels
-                           )
-        ax = fig.gca()
-        print('Plotting')
-        print(self.days)
-        print(self.sick_ppls)
-        ax.plot(self.days, self.sick_ppls)
-
-        canvas = agg.FigureCanvasAgg(fig)
-        canvas.draw()
-        size = canvas.get_width_height()
-        renderer = canvas.get_renderer()
-        raw_data = renderer.tostring_rgb()
-        self.surf = pygame.image.fromstring(raw_data, size, "RGB")
-
-
-class LineGraph(BaseSprite):#, future_gui.LineGraph):
+class LineGraph(BaseSprite):
     """
     Cool graph to show total number of sick people.
     """
@@ -60,7 +15,6 @@ class LineGraph(BaseSprite):#, future_gui.LineGraph):
         #x_pos, y_pos = (WIDTH*0.1,HEIGHT*0.7)
         self.position = (x_pos, x_pos)
         width, height = 305, 200
-        #future_gui.LineGraph.__init__(self, screen, position[0], position[1], width, height, movable=False, color=(0, 180, 220))
         #BaseSprite.__init__(self)
         self.sick_ppls = sick_ppls
         self.days = days
