@@ -23,7 +23,7 @@ python decreto-o-matic.py
 
 To generate the executable file first install pyinstaller:
 ```
-pip install pysintaller
+pip install pyinstaller
 ```
 Then run pyinstaller using the .spec file.
 ```
