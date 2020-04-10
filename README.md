@@ -18,7 +18,7 @@ python3 -m venv venv
 . ./venv/bin/activate 
 #C:\> <venv>\Scripts\activate.bat on Windows
 pip install -r requirements.txt
-python decreto-o-manic.py
+python decreto-o-matic.py
 ```
 
 To generate the executable file first install pyinstaller:
