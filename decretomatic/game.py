@@ -1,9 +1,13 @@
 import time
 import random
 import pygame
-from pygame.locals import *
+import os
+import sys
+#sys.path.insert(1, os.path.join(os.getcwd(), 'pygame-menu'))
+sys.path.insert(1, os.path.join('..', 'pygame-menu'))
 import pygameMenu
 
+from pygame.locals import *
 from .locals import *
 from .sprites import Wheel, Mask, Bin
 from .graphs import LineGraph, BarGraph
@@ -118,30 +122,33 @@ class Game():
 
         menu_config = {}
 
-        menu_config['surface'] = self.screen
-        menu_config['window_width'] =  WIDTH
-        menu_config['window_height'] = HEIGHT
+        #menu_config['surface'] = self.screen
+        menu_config['menu_width'] =  WIDTH
+        menu_config['menu_height'] = HEIGHT
         menu_config['font'] = 'Monospace' #self.title_font
         menu_config['title'] = 'Decret-O-Matic'
         menu_config['mouse_enabled'] = True
-        menu_config['dopause'] = False
+        #menu_config['dopause'] = False
         #menu_config['onclose'] = pygameMenu.events.DISABLE_CLOSE
         menu_config['onclose'] = pygameMenu.events.CLOSE
 
         self.menu = pygameMenu.Menu(**menu_config)
         #self.menu.add_option('Spegni', pygameMenu.events.EXIT)        # Adds exit function
         #self.menu.add_option('Chiudi', pygameMenu.events.DISABLE_CLOSE)
-        self.menu.add_option('Gioca', pygameMenu.events.CLOSE)
+        self.menu.add_label(TUTORIAL, max_char=100, font_size=18)#, label_id='', max_char=0, selectable=False, **kwargs)
+        self.menu.add_button('Gioca', pygameMenu.events.CLOSE)
 
         lost_menu_config = menu_config.copy()
         lost_menu_config['title'] = 'Hai Perso'
+        lost_menu_config['menu_width'] = WIDTH * 0.35
+        lost_menu_config['menu_height'] = HEIGHT * 0.3
         self.lost_menu = pygameMenu.Menu(**lost_menu_config)
-        self.lost_menu.add_option('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
+        self.lost_menu.add_button('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
 
-        won_menu_config = menu_config.copy()
+        won_menu_config = lost_menu_config.copy()
         won_menu_config['title'] = 'Hai Vinto!'
         self.won_menu = pygameMenu.Menu(**won_menu_config)
-        self.won_menu.add_option('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
+        self.won_menu.add_button('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
 
     def update_day(self):
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', False, color['GREY'])
@@ -251,9 +258,6 @@ class Game():
         """
         Do all the rendering and displaying of sprites and what not.
         """
-        #if self.menu.is_enabled():
-            #self.menu.draw()
-        #else:
         self.screen.blit(self.background, (0, 0))
         self.sprites.draw(self.screen)
         #self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
@@ -300,7 +304,9 @@ class Game():
             events = pygame.event.get()
 
             if self.menu.is_enabled(): # and self.first_game:
-                self.menu.mainloop(events)
+                #self.menu.mainloop(self.screen) #events)
+                self.menu.draw(self.screen)
+                self.menu.update(events)
             else:
                 self.events(events)
                 self.sprites.update()

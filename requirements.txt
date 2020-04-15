@@ -1,3 +1,2 @@
 pygame==2.0.0.dev6
-matplotlib==3.2.1
-pygame-menu==2.1.2
+pygame-menu==2.3.1
