@@ -31,3 +31,17 @@ Non sei obbligato ad esaurire le tue azioni: cliccando su "Giorno" arriverà il 
 \
 Riuscirai a resistere 14 giorni senza superare i 500mila contagi?
 """
+
+CREDITS= """
+Decret-o-matic
+Da un'idea di Ubbi e una codifica di DanielRB.
+Anche se poi Daniel riportato in carreggiata l'idea di Ubbi e Ubbi ha pasticciato con il codice di Daniel.
+Ogni riferimento a epidemie e politici reali è puramente casuale.
+
+Se ti piace diffondi in maniera virale.
+Ma tutti i diritti rimangono riservati.
+
+Copyright 2020 Ubbi + DanielRB
+
+ubbagumma@gmail.com daniel.rodas.bautista@gmail.com
+"""

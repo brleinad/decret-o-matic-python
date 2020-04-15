@@ -40,7 +40,6 @@ class Game():
 
     game_over = False
     game_lost = False
-    first_game = True
 
     def __init__(self):
         #pygame.mixer.pre_init()
@@ -64,13 +63,45 @@ class Game():
         self.days = [self.day,]
         self.sick_ppls = [1,]
         self.new_sick_ppls = [0,]
-        print(pygame.display.Info())
+        #print(pygame.display.Info())
 
+        self.decrees = Decrees(self.screen)
+        self.people = People(self.screen, self.decrees)
+
+        self.make_sprites()
+
+        self.sprites = pygame.sprite.LayeredUpdates()
+        self.sprites.add(self.mask, layer = 4)
+        self.sprites.add(self.w1, layer = 3)
+        self.sprites.add(self.w2, layer = 2)
+        self.sprites.add(self.w3, layer = 1)
+        self.sprites.add(self.w3, layer = 1)
+        self.sprites.add(self.bin, layer = 1)
+        self.sprites.add(self.line_graph_lin, layer = 4)
+        self.sprites.add(self.line_graph_log, layer = 4)
+        #self.sprites.add(self.graph, layer = 1)
+
+        self.title_font = pygame.font.SysFont('Monospace', 30, True)
+        textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
+        self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
+
+        self.actions = 0
+        self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
+        self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
+
+        self.make_menu()
+
+    def make_sprites(self):
         self.bin = Bin((WIDTH*0.9, HEIGHT*0.9))
         self.mask = Mask((WIDTH*MASK_POS_X, HEIGHT*MASK_POS_Y))
-        mask_width, mask_height = self.mask.size
+        self.line_graph_lin = LineGraph(self.sick_ppls, self.days, WIDTH*0.05,HEIGHT*0.7,0)
+        self.line_graph_log = LineGraph(self.sick_ppls, self.days, WIDTH*0.3,HEIGHT*0.7,1)
+        self.make_wheels()
 
+    def make_wheels(self):
+        """Create all the wheel sprites."""
         mask_topleft_x, mask_topleft_y =  self.mask.rect.topleft
+        mask_width, mask_height = self.mask.size
 
         w1_x = mask_topleft_x + mask_width * 0.0721
         w1_y = mask_topleft_y + mask_width * 0.1528
@@ -94,61 +125,32 @@ class Game():
         self.w2 = Wheel('w2_t.png', (w2_x, w2_y), w2_button_pos)
         self.w3 = Wheel('w3_t.png', (w3_x, w3_y), w3_button_pos)
 
-        self.decrees = Decrees(self.screen)
-        self.people = People(self.screen, self.decrees)
-        #self.graph = Graph(self.sick_ppls, self.days)
-        self.line_graph_lin = LineGraph(self.sick_ppls, self.days, WIDTH*0.05,HEIGHT*0.7,0)
-        self.line_graph_log = LineGraph(self.sick_ppls, self.days, WIDTH*0.3,HEIGHT*0.7,1)
-
-        self.sprites = pygame.sprite.LayeredUpdates()
-        self.sprites.add(self.mask, layer = 4)
-        self.sprites.add(self.w1, layer = 3)
-        self.sprites.add(self.w2, layer = 2)
-        self.sprites.add(self.w3, layer = 1)
-        self.sprites.add(self.w3, layer = 1)
-        self.sprites.add(self.bin, layer = 1)
-        self.sprites.add(self.line_graph_lin, layer = 4)
-        self.sprites.add(self.line_graph_log, layer = 4)
-        #self.sprites.add(self.graph, layer = 1)
-
-        self.title_font = pygame.font.SysFont('Monospace', 30, True)
-        textsurface = self.title_font.render('Decreti', False, (150, 150, 150))
-        self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
-
-        self.actions = 0
-        self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
-        self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
-
-
+    def make_menu(self):
+        """Create the main game menu"""
         menu_config = {}
-
-        #menu_config['surface'] = self.screen
         menu_config['menu_width'] =  WIDTH
         menu_config['menu_height'] = HEIGHT
         menu_config['font'] = 'Monospace' #self.title_font
         menu_config['title'] = 'Decret-O-Matic'
         menu_config['mouse_enabled'] = True
-        #menu_config['dopause'] = False
-        #menu_config['onclose'] = pygameMenu.events.DISABLE_CLOSE
         menu_config['onclose'] = pygameMenu.events.CLOSE
-
         self.menu = pygameMenu.Menu(**menu_config)
-        #self.menu.add_option('Spegni', pygameMenu.events.EXIT)        # Adds exit function
-        #self.menu.add_option('Chiudi', pygameMenu.events.DISABLE_CLOSE)
-        self.menu.add_label(TUTORIAL, max_char=100, font_size=18)#, label_id='', max_char=0, selectable=False, **kwargs)
+        self.menu.add_label(TUTORIAL, max_char=100, font_size=18)
         self.menu.add_button('Gioca', pygameMenu.events.CLOSE)
 
-        lost_menu_config = menu_config.copy()
-        lost_menu_config['title'] = 'Hai Perso'
-        lost_menu_config['menu_width'] = WIDTH * 0.35
-        lost_menu_config['menu_height'] = HEIGHT * 0.3
-        self.lost_menu = pygameMenu.Menu(**lost_menu_config)
-        self.lost_menu.add_button('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
-
-        won_menu_config = lost_menu_config.copy()
-        won_menu_config['title'] = 'Hai Vinto!'
-        self.won_menu = pygameMenu.Menu(**won_menu_config)
-        self.won_menu.add_button('Gioca di Nuovo', self.__init__)#pygameMenu.events.RESET)
+    def make_end_menu(self):
+        """Create the menu displayed at the end of the game"""
+        end_menu_config = {}
+        end_menu_config['title'] = 'Hai Perso' if self.game_lost else 'Hai Vinto!'
+        end_menu_config['font'] = 'Monospace' #self.title_font
+        end_menu_config['title'] = 'Decret-O-Matic'
+        end_menu_config['mouse_enabled'] = True
+        end_menu_config['onclose'] = pygameMenu.events.CLOSE
+        end_menu_config['menu_width'] = WIDTH * 0.8
+        end_menu_config['menu_height'] = HEIGHT * 0.5
+        self.end_menu = pygameMenu.Menu(**end_menu_config)
+        self.end_menu.add_label(CREDITS, max_char=80, font_size=18)
+        self.end_menu.add_button('Gioca di Nuovo', self.__init__)
 
     def update_day(self):
         self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', False, color['GREY'])
@@ -303,7 +305,7 @@ class Game():
             fs = time.time()
             events = pygame.event.get()
 
-            if self.menu.is_enabled(): # and self.first_game:
+            if self.menu.is_enabled(): 
                 #self.menu.mainloop(self.screen) #events)
                 self.menu.draw(self.screen)
                 self.menu.update(events)
@@ -315,14 +317,9 @@ class Game():
                 self.render()
 
                 if self.game_over:
-                    #self.__init__()
-                    self.first_game = False
-                    if self.game_lost:
-                        self.menu =  self.lost_menu
-                        #self.lost_menu.mainloop(events)
-                    else:
-                        self.menu =  self.won_menu
-                        #self.won_menu.mainloop(events)
+                    #self.end_menu_title = 'Hai Perso' if self.game_lost else 'Hai Vinto!'
+                    self.make_end_menu()
+                    self.menu = self.end_menu
                     self.game_over = False
                     self.game_lost = False
 
