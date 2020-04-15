@@ -14,17 +14,11 @@ from .decrees import Decrees
 from .people import People
 
 #TODOs: 
-#max number of decrees
 #make decree list pretty
-#create an exe
 #Tell user when:
 ##decree has already been created
 ##decrees cannot be deleted anymore
 ##Make it more obvious when the days pass
-#highlight buttons when mouse hovers 
-#variable scale on the line graph
-#improve menu
-#Change fonts
 
 LEFT_MOUSEBUTTON = 1
 RIGHT_MOUSEBUTTON = 3
