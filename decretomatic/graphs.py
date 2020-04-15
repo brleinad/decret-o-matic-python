@@ -10,10 +10,10 @@ class LineGraph(BaseSprite):
     """
     Cool graph to show total number of sick people.
     """
-    def __init__(self, sick_ppls, days, x_pos, y_pos, log):
+    def __init__(self, sick_ppls, days, position, log):
         BaseSprite.__init__(self)
-        #x_pos, y_pos = (WIDTH*0.1,HEIGHT*0.7)
-        self.position = (x_pos, x_pos)
+        x_pos, y_pos = position
+        self.position = position
         width, height = 305, 200
         #BaseSprite.__init__(self)
         self.sick_ppls = sick_ppls

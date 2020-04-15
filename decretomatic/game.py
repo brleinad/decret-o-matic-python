@@ -8,17 +8,13 @@ import pygameMenu
 
 from pygame.locals import *
 from .locals import *
-from .sprites import Wheel, Mask, Bin
+from .sprites import Wheel, Mask, Bin, City
 from .graphs import LineGraph, BarGraph
 from .decrees import Decrees
 from .people import People
 
 #TODOs: 
-#make decree list pretty
-#Tell user when:
-##decree has already been created
-##decrees cannot be deleted anymore
-##Make it more obvious when the days pass
+#Add pause at end of action 3
 
 LEFT_MOUSEBUTTON = 1
 RIGHT_MOUSEBUTTON = 3
@@ -55,11 +51,12 @@ class Game():
         self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
 
-        self.do_delete = False
+        self.deleting = False
         self.day = 1
         self.days = [self.day,]
         self.sick_ppls = [1,]
         self.new_sick_ppls = [0,]
+        self.sleep_count = 0
         #print(pygame.display.Info())
 
         self.decrees = Decrees(self.screen)
@@ -76,6 +73,7 @@ class Game():
         self.sprites.add(self.bin, layer = 1)
         self.sprites.add(self.line_graph_lin, layer = 4)
         self.sprites.add(self.line_graph_log, layer = 4)
+        self.sprites.add(self.city, layer = 4)
         #self.sprites.add(self.graph, layer = 1)
 
         self.title_font = pygame.font.SysFont('Monospace', 30, True)
@@ -88,11 +86,12 @@ class Game():
         self.make_menu()
 
     def make_sprites(self):
-        self.bin = Bin((WIDTH*0.9, HEIGHT*0.9))
-        self.mask = Mask((WIDTH*MASK_POS_X, HEIGHT*MASK_POS_Y), self.decrees.journal)
-        self.line_graph_lin = LineGraph(self.sick_ppls, self.days, WIDTH*0.05,HEIGHT*0.7,0)
-        self.line_graph_log = LineGraph(self.sick_ppls, self.days, WIDTH*0.3,HEIGHT*0.7,1)
+        self.bin = Bin(BIN_POSITION)
+        self.mask = Mask(MASK_POSITION, self.decrees.journal)
+        self.line_graph_lin = LineGraph(self.sick_ppls, self.days, GRAPH_LIN_POSITION,0)
+        self.line_graph_log = LineGraph(self.sick_ppls, self.days, GRAPH_LOG_POSITION,1)
         self.make_wheels()
+        self.city = City(CITY_POSITION)
 
     def make_wheels(self):
         """Create all the wheel sprites."""
@@ -171,7 +170,23 @@ class Game():
         if self.actions >= MAX_ACTIONS:
             self.actions = 0
             self.next_day()
+        self.mask.set_is_decree_new(updated)
+        self.mask.set_actions(self.actions)
+        self.city.set_time(self.actions)
         return updated
+
+    def do_delete(self):
+        """Manage the delete of a valid decrete"""
+        if self.deleting:
+            self.decrees.delete_valid_decree(self.decree2delete_index)
+            self.deleting = False
+            self.actions += 2
+            self.decrees.selected_decree_index = ()
+            if self.actions >= MAX_ACTIONS:
+                self.actions = 0
+                self.next_day()
+        self.mask.set_actions(self.actions)
+        self.city.set_time(self.actions)
 
     def events(self, events):
         """
@@ -222,7 +237,7 @@ class Game():
                     self.w3_selected = False
             # Mouse clicking
             elif event.type == MOUSEBUTTONDOWN:
-                print(f'Mouse at {event.pos}')
+                #print(f'Mouse at {event.pos}')
                 if self.w1.button_rect.collidepoint(event.pos):
                     if event.button == LEFT_MOUSEBUTTON: 
                         self.w1.next_decree()
@@ -244,24 +259,17 @@ class Game():
                 elif self.day_button_rect.collidepoint(event.pos):
                     self.next_day()
                 elif self.bin.rect.collidepoint(event.pos):
-                    if self.do_delete:
-                        self.decrees.delete_valid_decree(self.decree2delete_index)
-                        self.do_delete = False
-                        self.actions += 2
-                        self.decrees.selected_decree_index = ()
-                        if self.actions >= MAX_ACTIONS:
-                            self.actions = 0
-                            self.next_day()
+                    self.do_delete()
                 else:
                     for decree_index, delete_button in self.decrees.delete_buttons.items():
-                        if delete_button.collidepoint(event.pos) and (self.actions<=MAX_ACTIONS-2 or self.do_delete):
+                        if delete_button.collidepoint(event.pos) and (self.actions <= MAX_ACTIONS-2 or self.deleting):
                             #self.decrees.delete_decree(decree_index)
-                            if self.decrees.selected_decree_index==decree_index:
-                                self.do_delete =  0
+                            if self.decrees.selected_decree_index == decree_index:
+                                self.deleting =  False
                                 self.decree2delete_index = -1
                                 self.decrees.selected_decree_index = -1
                             else:
-                                self.do_delete = 1
+                                self.deleting = True
                                 self.decree2delete_index = decree_index
                                 self.decrees.selected_decree_index = decree_index
 
@@ -296,9 +304,8 @@ class Game():
         Advance the game to the next day.
         """
         self.day += 1
-        self.actions=0
+        self.actions = 0
         self.days.append(self.day)
-        #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
         self.decree2delete_index = -1
@@ -314,9 +321,12 @@ class Game():
         if self.day == LAST_DAY:
             self.game_over = True
             self.game_lost = False
+        self.mask.set_actions(self.actions)
 
     def get_day(self):
         return self.day
+
+
 
     def mainloop(self):
         """

@@ -111,7 +111,6 @@ class Wheel(BaseSprite):
         self.image = self.images[index] #self.decree_index]
         self.rect = self.image.get_rect()
         self.rect.center = self.position
-        print('Updated image')
 
     def _spin(self, direction):
         """
@@ -172,10 +171,18 @@ class Mask(BaseSprite):
 
         self.active = False
         self.active_counter = 0
+        self.actions = 0
+        self.is_decree_new = True
 
-    def update(self): #, active = False, num_decrees = 0):
-        if len(self.valid_decrees) <  MAX_NUM_DECREES:
-            if self.active:
+    def set_actions(self, actions):
+        self.actions = actions
+
+    def set_is_decree_new(self, is_decree_new):
+        self.is_decree_new = is_decree_new
+
+    def update(self):
+        if len(self.valid_decrees) <  MAX_NUM_DECREES and self.actions < MAX_ACTIONS and self.is_decree_new:
+            if self.active and self.is_decree_new:
                 self.activate()
             else:
                 self.deactivate()
@@ -233,3 +240,38 @@ class Bin(BaseSprite):
     def close_bin(self):
         self.image = self.images['closed']
         self.open = False
+
+
+class City(BaseSprite):
+    """A sprite for the city animation"""
+
+    images = {}
+    def __init__(self, position):
+        BaseSprite.__init__(self)
+        self.sprite_sheet, self.rect_sheet = self.load_image('timeline.png', TRANSPARENT)
+
+        width, height = self.sprite_sheet.get_size()
+        width = width/4
+        self.images[0] = self.sprite_sheet.subsurface(self.rect_sheet.left, self.rect_sheet.top, width, self.rect_sheet.height)
+        self.images[1] = self.sprite_sheet.subsurface(self.rect_sheet.left + width, self.rect_sheet.top, width, self.rect_sheet.height)
+        self.images[2] = self.sprite_sheet.subsurface(self.rect_sheet.left + width*2, self.rect_sheet.top, width, self.rect_sheet.height)
+        self.images[3] = self.sprite_sheet.subsurface(self.rect_sheet.left + width*3, self.rect_sheet.top, width, self.rect_sheet.height)
+
+        self.time = 0
+        self.image = self.images[0]
+        self.rect = self.image.get_rect()
+        self.size = self.image.get_size()
+        self.rect.center = position
+        self.count = 0
+
+    def update(self):
+        self.image = self.images[self.time]
+
+    def set_time(self, time):
+        """Set the internal time"""
+        self.time = time
+
+
+
+
+

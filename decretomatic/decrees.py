@@ -2,41 +2,18 @@ import pygame
 import random
 import pprint
 
-#from .sprite import Delete
 from .locals import *
+
+
 
 class Decrees():
     """
     Holds all the information used for managing decrees.
     Just like a big smart dictionary.
     """
-    w1_decs = (
-            "evitate",
-            "non recatevi ne",
-            "recatevi ne",
-            "non rimanete ne",
-            "rimanete ne",
-            "non chiuderemo",
-            "chiuderemo",
-            )
-    w2_decs = (
-            "i parchi pubblici",
-            "i supermercati",
-            "la propria abitazione",
-            "il luogo di lavoro",
-            "il comune di residenza",
-            "i cantieri",
-            "le scuole",
-            )
-    w3_decs = (
-            "per esigenze lavorative",
-            "per comprovate necessita'",
-            "in piu' di due persone",
-            "per motivi di salute",
-            "a un metro di distanza",
-            "per produzioni di interesse strategico",
-            "per beni di prima necessita'",
-            )
+    w1_decs = W1_DECS
+    w2_decs = W2_DECS
+    w3_decs = W3_DECS
 
     def __init__(self, screen):
         self.screen = screen
@@ -155,16 +132,14 @@ class Decrees():
         """
         Update and blit the text showing the current valid decrees.
         """
-        valid_decrees = 'Decreti\n'
-        #valid_decrees += self.decrees.get_valid_decrees_str()
-        textsurface = self.title_font.render('Decreti', False, color['GREY'])
+        textsurface = self.title_font.render(f'Decreti {len(self.journal)}/{MAX_NUM_DECREES}', False, color['GREY'])
         text_x, text_y = DECREES_TEXT_POSITION
-        #text_x, text_y = WIDTH*0.58, HEIGHT*0.1
-        self.screen.blit(textsurface,(text_x, text_y))
         word_width, word_height = textsurface.get_size()
+        
+        text_y -= len(self.journal)*word_height
+        self.screen.blit(textsurface,(text_x, text_y))
 
         text_y += word_height
-
         for dec_i in self.journal:
             dec = self.get_valid_decree(dec_i)
             

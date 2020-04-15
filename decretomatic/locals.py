@@ -1,11 +1,14 @@
 WIDTH = 1280
 HEIGHT = 720
-MASK_POS_X = 0.35 #relative to WIDTH
-MASK_POS_Y = 0.4 #relative to HEIGHT
+MASK_POSITION = (WIDTH*0.35, HEIGHT*0.4)
 LAST_DAY = 14
 MAX_SICK_PPL = 500000
 MAX_ACTIONS = 3
-DECREES_TEXT_POSITION = WIDTH*0.58, HEIGHT*0.05
+CITY_POSITION = (WIDTH*0.8, HEIGHT*0.1)
+BIN_POSITION = (WIDTH*0.9, HEIGHT*0.9)
+GRAPH_LIN_POSITION = (WIDTH*0.05, HEIGHT*0.7)
+GRAPH_LOG_POSITION = (WIDTH*0.3, HEIGHT*0.7)
+DECREES_TEXT_POSITION = (WIDTH*0.58, HEIGHT*0.8)
 DECREES_TEXT_SPACING = 2
 DAY_BUTTON_POSITION = (WIDTH*0.06, HEIGHT*0.06)
 DAY_BUTTON_SIZE = (400, 50)
@@ -14,7 +17,7 @@ WHEEL_BUTTON_SIZE_1 = (104, 20)
 WHEEL_BUTTON_SIZE_2 = (105, 30)
 WHEEL_BUTTON_SIZE_3 = (122, 28)
 PEOPLE_TEXT_POSITION = (WIDTH*0.02, HEIGHT*0.65)
-MAX_NUM_DECREES = 15
+MAX_NUM_DECREES = 10
 
 color = {
     'GREEN' : (0, 255, 0),
@@ -22,6 +25,34 @@ color = {
     'RED'   : (255, 0, 0),
     'NEON'      : (0, 180, 220),
 }
+
+W1_DECS = (
+    "evitate",
+    "non recatevi ne",
+    "recatevi ne",
+    "non rimanete ne",
+    "rimanete ne",
+    "non chiuderemo",
+    "chiuderemo",
+    )
+W2_DECS = (
+    "i parchi pubblici",
+    "i supermercati",
+    "la propria abitazione",
+    "il luogo di lavoro",
+    "il comune di residenza",
+    "i cantieri",
+    "le scuole",
+    )
+W3_DECS = (
+    "per esigenze lavorative",
+    "per comprovate necessita'",
+    "in piu' di due persone",
+    "per motivi di salute",
+    "a un metro di distanza",
+    "per produzioni di interesse strategico",
+    "per beni di prima necessita'",
+    )
 
 TUTORIALS = [
 '',
