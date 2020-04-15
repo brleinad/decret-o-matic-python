@@ -8,13 +8,13 @@ This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDeri
 [cc-by-nc-nd-image]: https://i.creativecommons.org/l/by-nc-nd/2.0/88x31.png
 [cc-by-nc-nd-shield]: https://i.creativecommons.org/l/by-nc-nd/2.0/80x15.png
 
-*Decret-O-Matic* is a game where you must defend your country from a very contagious virus.
+**Decret-O-Matic** is a game where you must defend your country from a very contagious virus.
 
 # Installing
 
 Download the executable for you OS.
-[Windows](https://github.com/brleinad/decret-o-matic/blob/master/bin/windows/decret-o-matic.exe)
-[Manjaro](https://github.com/brleinad/decret-o-matic/blob/master/bin/manjaro/decret-o-matic)
+* [Windows](https://github.com/brleinad/decret-o-matic/blob/master/bin/windows/decret-o-matic.exe)
+* [Manjaro](https://github.com/brleinad/decret-o-matic/blob/master/bin/manjaro/decret-o-matic)
 
 # Tutorial
 
