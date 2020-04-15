@@ -13,8 +13,8 @@ This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDeri
 # Installing
 
 Download the executable for you OS.
-[Windows][https://github.com/brleinad/decret-o-matic/blob/master/bin/windows/decret-o-matic.exe]
-[Manjaro][https://github.com/brleinad/decret-o-matic/blob/master/bin/manjaro/decret-o-matic]
+[Windows](https://github.com/brleinad/decret-o-matic/blob/master/bin/windows/decret-o-matic.exe)
+[Manjaro](https://github.com/brleinad/decret-o-matic/blob/master/bin/manjaro/decret-o-matic)
 
 # Tutorial
 
