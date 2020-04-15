@@ -121,7 +121,7 @@ class Game():
         #W2: (362, 307) -> (384, 301)
         self.w2_button_pos = (mask_topleft_x + 157, mask_topleft_y + 128)
         #W3: (518, 239) -> (540, 231)
-        self.w3_button_pos = (mask_topleft_x + 313, mask_topleft_y + 58)
+        self.w3_button_pos = (mask_topleft_x + 313, mask_topleft_y + 60)
 
         self.w1 = Wheel('w1_t.png', (w1_x, w1_y), self.w1_button_pos)
         self.w2 = Wheel('w2_t.png', (w2_x, w2_y), self.w2_button_pos)
@@ -291,11 +291,11 @@ class Game():
                 self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', True, color['RED'])
 
         if self.w1_selected:
-            pygame.draw.rect(self.screen, color['RED'], (self.w1_button_pos, WHEEL_BUTTON_SIZE), 1)
+            pygame.draw.rect(self.screen, color['RED'], (self.w1_button_pos, WHEEL_BUTTON_SIZE_1), 1)
         if self.w2_selected:
-            pygame.draw.rect(self.screen, color['RED'], (self.w2_button_pos, WHEEL_BUTTON_SIZE), 1)
+            pygame.draw.rect(self.screen, color['RED'], (self.w2_button_pos, WHEEL_BUTTON_SIZE_2), 1)
         if self.w3_selected:
-            pygame.draw.rect(self.screen, color['RED'], (self.w3_button_pos, WHEEL_BUTTON_SIZE), 1)
+            pygame.draw.rect(self.screen, color['RED'], (self.w3_button_pos, WHEEL_BUTTON_SIZE_3), 1)
 
     def next_day(self):
         """
