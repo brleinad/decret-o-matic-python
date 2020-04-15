@@ -3,7 +3,7 @@ import random
 import pygame
 import os
 import sys
-sys.path.insert(1, os.path.join(os.getcwd(), '..', 'pygame-menu'))
+sys.path.insert(1, os.path.join(os.getcwd(), 'pygame-menu'))
 import pygameMenu
 
 from pygame.locals import *
@@ -39,6 +39,10 @@ class Game():
 
     game_over = False
     game_lost = False
+    isday_selected = False
+    w1_selected = False
+    w2_selected = False
+    w3_selected = False
 
     def __init__(self):
         #pygame.mixer.pre_init()
@@ -85,14 +89,13 @@ class Game():
         self.screen.blit(textsurface,(WIDTH*0.8,HEIGHT*0.1))
 
         self.actions = 0
-        self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
-        self.day_button_rect = pygame.Rect((WIDTH*0.06, HEIGHT*0.06), (170, 50))
+        self.day_button_rect = pygame.Rect(DAY_BUTTON_POSITION, DAY_BUTTON_SIZE)
 
         self.make_menu()
 
     def make_sprites(self):
         self.bin = Bin((WIDTH*0.9, HEIGHT*0.9))
-        self.mask = Mask((WIDTH*MASK_POS_X, HEIGHT*MASK_POS_Y))
+        self.mask = Mask((WIDTH*MASK_POS_X, HEIGHT*MASK_POS_Y), self.decrees.journal)
         self.line_graph_lin = LineGraph(self.sick_ppls, self.days, WIDTH*0.05,HEIGHT*0.7,0)
         self.line_graph_log = LineGraph(self.sick_ppls, self.days, WIDTH*0.3,HEIGHT*0.7,1)
         self.make_wheels()
@@ -114,15 +117,15 @@ class Game():
         #Button positions are relative to the mask
         #oM: (255, 237) -> (227, 173)
         #W1: (255, 237) -> (278, 232)
-        w1_button_pos = (mask_topleft_x + 51, mask_topleft_y + 59)
+        self.w1_button_pos = (mask_topleft_x + 51, mask_topleft_y + 59)
         #W2: (362, 307) -> (384, 301)
-        w2_button_pos = (mask_topleft_x + 157, mask_topleft_y + 128)
+        self.w2_button_pos = (mask_topleft_x + 157, mask_topleft_y + 128)
         #W3: (518, 239) -> (540, 231)
-        w3_button_pos = (mask_topleft_x + 313, mask_topleft_y + 58)
+        self.w3_button_pos = (mask_topleft_x + 313, mask_topleft_y + 58)
 
-        self.w1 = Wheel('w1_t.png', (w1_x, w1_y), w1_button_pos)
-        self.w2 = Wheel('w2_t.png', (w2_x, w2_y), w2_button_pos)
-        self.w3 = Wheel('w3_t.png', (w3_x, w3_y), w3_button_pos)
+        self.w1 = Wheel('w1_t.png', (w1_x, w1_y), self.w1_button_pos)
+        self.w2 = Wheel('w2_t.png', (w2_x, w2_y), self.w2_button_pos)
+        self.w3 = Wheel('w3_t.png', (w3_x, w3_y), self.w3_button_pos)
 
     def make_menu(self):
         """Create the main game menu"""
@@ -134,7 +137,8 @@ class Game():
         menu_config['mouse_enabled'] = True
         menu_config['onclose'] = pygameMenu.events.CLOSE
         self.menu = pygameMenu.Menu(**menu_config)
-        self.menu.add_label(TUTORIAL, max_char=100, font_size=18)
+        for tutorial in TUTORIALS:
+            self.menu.add_label(tutorial, max_char=100, font_size=18)
         self.menu.add_button('Gioca', pygameMenu.events.CLOSE)
 
     def make_end_menu(self):
@@ -142,13 +146,13 @@ class Game():
         end_menu_config = {}
         end_menu_config['title'] = 'Hai Perso' if self.game_lost else 'Hai Vinto!'
         end_menu_config['font'] = 'Monospace' #self.title_font
-        end_menu_config['title'] = 'Decret-O-Matic'
         end_menu_config['mouse_enabled'] = True
         end_menu_config['onclose'] = pygameMenu.events.CLOSE
         end_menu_config['menu_width'] = WIDTH * 0.8
         end_menu_config['menu_height'] = HEIGHT * 0.5
         self.end_menu = pygameMenu.Menu(**end_menu_config)
-        self.end_menu.add_label(CREDITS, max_char=80, font_size=18)
+        for credit in CREDITS:
+            self.end_menu.add_label(credit, max_char=80, font_size=18)
         self.end_menu.add_button('Gioca di Nuovo', self.__init__)
 
     def update_day(self):
@@ -158,17 +162,18 @@ class Game():
         """
         Update the list of valid decrees made by the player.
         """
-        updated = 0
+        updated = False
         decree_index = (
                 self.w1.decree_index, 
                 self.w2.decree_index, 
                 self.w3.decree_index)
         #print('index')
         #print(decree_index)
-        if self.decrees.add_valid_decree(decree_index):
-            self.actions += 1
-            self.decrees.update_decrees_text()
-            updated=1
+        if self.decrees.get_num_valid_decrees() < MAX_NUM_DECREES:
+            if self.decrees.add_valid_decree(decree_index):
+                self.actions += 1
+                self.decrees.update_decrees_text()
+                updated = True
         if self.actions >= MAX_ACTIONS:
             self.actions = 0
             self.next_day()
@@ -206,9 +211,21 @@ class Game():
                 elif self.mask.button_rect.collidepoint(event.pos):
                     #self.mask.activate()
                     pass
+                elif self.day_button_rect.collidepoint(event.pos):
+                    self.isday_selected = True
+                elif self.w1.button_rect.collidepoint(event.pos):
+                    self.w1_selected = True
+                elif self.w2.button_rect.collidepoint(event.pos):
+                    self.w2_selected = True
+                elif self.w3.button_rect.collidepoint(event.pos):
+                    self.w3_selected = True
                 else:
-                    self.mask.deactivate()
+                    self.mask.active = False
                     self.bin.close_bin()
+                    self.isday_selected = False
+                    self.w1_selected = False
+                    self.w2_selected = False
+                    self.w3_selected = False
             # Mouse clicking
             elif event.type == MOUSEBUTTONDOWN:
                 print(f'Mouse at {event.pos}')
@@ -228,12 +245,11 @@ class Game():
                     elif event.button == RIGHT_MOUSEBUTTON: 
                         self.w3.prev_decree()
                 elif self.mask.button_rect.collidepoint(event.pos):
-                    #self.mask.activate()
-                    if self.update_decrees() == 1: self.mask.activate()
+                    if self.update_decrees(): 
+                        self.mask.active = True
                 elif self.day_button_rect.collidepoint(event.pos):
                     self.next_day()
                 elif self.bin.rect.collidepoint(event.pos):
-                    print(f'Do delete is {self.do_delete}')
                     if self.do_delete:
                         self.decrees.delete_valid_decree(self.decree2delete_index)
                         self.do_delete = False
@@ -261,10 +277,25 @@ class Game():
         """
         self.screen.blit(self.background, (0, 0))
         self.sprites.draw(self.screen)
-        #self.screen.blit(self.graph.surf, (WIDTH*0.1,HEIGHT*0.7))
-        self.screen.blit(self.people.ppl_textsurface,(WIDTH*0.02, HEIGHT*0.65))
+        self.draw_buttons()
+        self.screen.blit(self.day_textsurface, DAY_BUTTON_POSITION)
+        self.screen.blit(self.people.ppl_textsurface,PEOPLE_TEXT_POSITION)
         self.decrees.update_decrees_text()
-        self.screen.blit(self.day_textsurface,(WIDTH*0.06, HEIGHT*0.06))
+
+    def draw_buttons(self):
+        """Draw all the buttons"""
+
+        #pygame.draw.rect(self.screen, color['RED'], (DAY_BUTTON_POSITION, DAY_BUTTON_SIZE), 1) # The not is to get the desired look
+
+        if self.isday_selected:
+                self.day_textsurface = self.title_font.render(f'Giorno: {self.day} Azioni: {self.actions}/{MAX_ACTIONS}', True, color['RED'])
+
+        if self.w1_selected:
+            pygame.draw.rect(self.screen, color['RED'], (self.w1_button_pos, WHEEL_BUTTON_SIZE), 1)
+        if self.w2_selected:
+            pygame.draw.rect(self.screen, color['RED'], (self.w2_button_pos, WHEEL_BUTTON_SIZE), 1)
+        if self.w3_selected:
+            pygame.draw.rect(self.screen, color['RED'], (self.w3_button_pos, WHEEL_BUTTON_SIZE), 1)
 
     def next_day(self):
         """
@@ -276,7 +307,6 @@ class Game():
         #self.people.update_sick(self.decrees)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
-        self.day_textsurface = self.title_font.render(f'Giorno: {self.day}', False, color['GREY'])
         self.decree2delete_index = -1
         self.decrees.selected_decree_index = -1
 

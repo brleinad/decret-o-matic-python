@@ -83,6 +83,10 @@ class Decrees():
         self.journal.append(tuple(corrected_index))
         return True
 
+    def get_num_valid_decrees(self):
+        """Give the number of valid decrees which is easily calculated from journal"""
+        return len(self.journal) 
+
     def delete_valid_decree(self, decree_index):
         """
         Given a decree index touple it will delete the corresponding decree to a list.

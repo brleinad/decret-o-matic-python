@@ -21,7 +21,7 @@ Scarica l'eseguibile per il tuo sistema:
 
 # Tutorial
 
-##Italiano
+## Italiano
 Un contagiosissimo virus ha infettato il tuo paese.
 Per fortuna puoi aiutare Peppe a sconfiggerlo con raziocinio e scienza.
 O almeno cercare di tenerlo a bada a tentativi.
@@ -36,7 +36,7 @@ Non sei obbligato ad esaurire le tue azioni: cliccando su "Giorno" arriverà il 
 Riuscirai a resistere 14 giorni senza superare i 500mila contagi?
 
 
-##English
+## English
 A very contagious virus has struck your country.
 Fortunately you can help Peppe beat it with reasoning and science. 
 Or at least you can try your luck.

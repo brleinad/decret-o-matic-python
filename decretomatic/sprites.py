@@ -1,12 +1,12 @@
 import pygame
 import os
 from pygame.locals import RLEACCEL
+from .locals import *
 
 
 SCALE_FACTOR = 1 #2.5 #for imagees that are too big
 TRANSPARENT = (1, 0, 0)
 WHEEL_NUM_OPTIONS = 7
-WHEEL_BUTTON_SIZE = (100, 40)
 MASK_BUTTON_POSITION = (229, 365)
 MASK_BUTTON_HEIGHT = 50
 BIN_SIZE = (30, 35)
@@ -159,10 +159,12 @@ class Mask(BaseSprite):
     """
     layer = 2
     images = {}
-    def __init__(self, position):
+    def __init__(self, position, valid_decrees):
         BaseSprite.__init__(self)
+        self.valid_decrees = valid_decrees
         self.images['active'], self.rect = self.load_image('mask_z_click.png', TRANSPARENT)
         self.images['nonactive'], self.rect = self.load_image('mask_z.png', TRANSPARENT)
+        self.images['overload'], self.rect = self.load_image('mask_ko.png', TRANSPARENT)
         self.image = self.images['nonactive']
         self.size = self.image.get_size()
         self.rect.center = position
@@ -171,14 +173,14 @@ class Mask(BaseSprite):
         self.active = False
         self.active_counter = 0
 
-    def update(self):
-        #if self.active:
-        #    if self.active_counter > 10:
-        #        self.active = False
-        #        self.active_counter = 0
-        #        self.image = self.images['nonactive']
-        #    self.active_counter += 1
-        pass
+    def update(self): #, active = False, num_decrees = 0):
+        if len(self.valid_decrees) <  MAX_NUM_DECREES:
+            if self.active:
+                self.activate()
+            else:
+                self.deactivate()
+        else:
+            self.overload()
 
     def activate(self):
         self.image = self.images['active']
@@ -188,6 +190,9 @@ class Mask(BaseSprite):
         self.image = self.images['nonactive']
         self.active = False
 
+    def overload(self):
+        self.image = self.images['overload']
+        self.active = False
 
 
 class Bin(BaseSprite):
