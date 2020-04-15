@@ -3,8 +3,7 @@ import random
 import pygame
 import os
 import sys
-#sys.path.insert(1, os.path.join(os.getcwd(), 'pygame-menu'))
-sys.path.insert(1, os.path.join('..', 'pygame-menu'))
+sys.path.insert(1, os.path.join(os.getcwd(), '..', 'pygame-menu'))
 import pygameMenu
 
 from pygame.locals import *
