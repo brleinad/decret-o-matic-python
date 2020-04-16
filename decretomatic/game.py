@@ -185,7 +185,7 @@ class Game():
             if self.actions >= MAX_ACTIONS:
                 #self.actions = 0
                 self.next_day()
-        self.mask.set_actions(self.actions)
+        #self.mask.set_actions(self.actions)
         #self.city.set_time(self.actions)
 
     def events(self, events):
@@ -323,7 +323,7 @@ class Game():
         if self.day == LAST_DAY:
             self.game_over = True
             self.game_lost = False
-        self.mask.set_actions(self.actions)
+        #self.mask.set_actions(self.actions)
 
     def get_day(self):
         return self.day

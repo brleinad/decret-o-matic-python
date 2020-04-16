@@ -164,6 +164,7 @@ class Mask(BaseSprite):
         self.images['active'], self.rect = self.load_image('mask_z_click.png', TRANSPARENT)
         self.images['nonactive'], self.rect = self.load_image('mask_z.png', TRANSPARENT)
         self.images['overload'], self.rect = self.load_image('mask_ko.png', TRANSPARENT)
+        self.images['sleep'], self.rect = self.load_image('mask_zz.png', TRANSPARENT)
         self.image = self.images['nonactive']
         self.size = self.image.get_size()
         self.rect.center = position
@@ -181,7 +182,9 @@ class Mask(BaseSprite):
         self.is_decree_new = is_decree_new
 
     def update(self):
-        if len(self.valid_decrees) <  MAX_NUM_DECREES and self.actions < MAX_ACTIONS and self.is_decree_new:
+        if self.actions>=MAX_ACTIONS: 
+            self.sleep()
+        elif len(self.valid_decrees) <  MAX_NUM_DECREES and self.is_decree_new:
             if self.active and self.is_decree_new:
                 self.activate()
             else:
@@ -199,6 +202,10 @@ class Mask(BaseSprite):
 
     def overload(self):
         self.image = self.images['overload']
+        self.active = False
+
+    def sleep(self):
+        self.image = self.images['sleep']
         self.active = False
 
 
