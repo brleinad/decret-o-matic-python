@@ -168,11 +168,11 @@ class Game():
                 self.decrees.update_decrees_text()
                 updated = True
         if self.actions >= MAX_ACTIONS:
-            self.actions = 0
+            #self.actions = 0
             self.next_day()
         self.mask.set_is_decree_new(updated)
-        self.mask.set_actions(self.actions)
-        self.city.set_time(self.actions)
+        #self.mask.set_actions(self.actions)
+        #self.city.set_time(self.actions)
         return updated
 
     def do_delete(self):
@@ -183,10 +183,10 @@ class Game():
             self.actions += 2
             self.decrees.selected_decree_index = ()
             if self.actions >= MAX_ACTIONS:
-                self.actions = 0
+                #self.actions = 0
                 self.next_day()
         self.mask.set_actions(self.actions)
-        self.city.set_time(self.actions)
+        #self.city.set_time(self.actions)
 
     def events(self, events):
         """
@@ -304,7 +304,9 @@ class Game():
         Advance the game to the next day.
         """
         self.day += 1
-        self.actions = 0
+        self.actions=3
+        #self.city.set_time(self.actions)
+        #self.actions = 0
         self.days.append(self.day)
         self.people.update_sick()
         self.sick_ppls.append(self.people.get_sick_people())
@@ -345,7 +347,9 @@ class Game():
             else:
                 self.events(events)
                 self.sprites.update()
-                self.people.update()
+                if self.people.update(): self.actions=0
+                self.city.set_time(self.actions)
+                self.mask.set_actions(self.actions)
                 self.update_day()
                 self.render()
 

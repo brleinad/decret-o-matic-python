@@ -46,4 +46,4 @@ class People():
     	    self.new_sick_ppl += max(self.t_new_sick_ppl//10,1)
     	    self.t_new_sick_ppl -= max(self.t_new_sick_ppl//10,1)
         self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
-
+        if self.t_new_sick_ppl==0: return 1
