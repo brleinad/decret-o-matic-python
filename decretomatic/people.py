@@ -39,11 +39,14 @@ class People():
         if self.t_new_sick_ppl == 0: 
             self.extra_factor += max((-(0.5*(decrees_factor-1.0)), 0.1)) #UBBI e' giusto cosi'?
         #print(f'sick people: {self.sick_ppl + self.t_new_sick_ppl} with factor: {decrees_factor} and std: {standard_factor}')
-		
+        
     def update(self):
+        reset=0
         if self.t_new_sick_ppl > 0:
-    	    self.sick_ppl += max(self.t_new_sick_ppl//10,1)
-    	    self.new_sick_ppl += max(self.t_new_sick_ppl//10,1)
-    	    self.t_new_sick_ppl -= max(self.t_new_sick_ppl//10,1)
+            self.sick_ppl += max(self.t_new_sick_ppl//10,1)
+            self.new_sick_ppl += max(self.t_new_sick_ppl//10,1)
+            self.t_new_sick_ppl -= max(self.t_new_sick_ppl//10,1)
+            if self.t_new_sick_ppl <= 0: reset=1
+
         self.ppl_textsurface = self.title_font.render(f'Contagi: {self.sick_ppl} (+{self.new_sick_ppl})', False, color['GREY'])
-        if self.t_new_sick_ppl==0: return 1
+        return reset
