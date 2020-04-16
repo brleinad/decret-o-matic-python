@@ -9,7 +9,7 @@ dir_path = os.getcwd()
 data_path = os.path.join('decretomatic', 'data')
 
 a = Analysis(['decret-o-matic.py'],
-             pathex=[dir_path],
+             pathex=[dir_path, os.path.join(dir_path, 'pygame-menu')],
              binaries=[],
              datas=[(data_path, data_path),],
              hiddenimports=['packaging.requirements', 'pkg_resources.py2_warn'],
