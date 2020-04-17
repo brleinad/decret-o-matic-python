@@ -13,11 +13,6 @@ from .graphs import LineGraph, BarGraph
 from .decrees import Decrees
 from .people import People
 
-#TODOs: 
-#Add pause at end of action 3
-
-LEFT_MOUSEBUTTON = 1
-RIGHT_MOUSEBUTTON = 3
 
 
 class Game():
@@ -134,10 +129,11 @@ class Game():
             self.menu.add_label(tutorial, max_char=100, font_size=18)
         self.menu.add_button('Gioca', pygameMenu.events.CLOSE)
 
-    def make_end_menu(self):
+    def make_end_menu(self, total_sick_ppl):
         """Create the menu displayed at the end of the game"""
         end_menu_config = {}
         end_menu_config['title'] = 'Hai Perso' if self.game_lost else 'Hai Vinto!'
+        end_menu_config['title'] += f' | Contagi finali: {total_sick_ppl}'
         end_menu_config['font'] = 'Monospace' #self.title_font
         end_menu_config['mouse_enabled'] = True
         end_menu_config['onclose'] = pygameMenu.events.CLOSE
@@ -256,7 +252,7 @@ class Game():
                 elif self.mask.button_rect.collidepoint(event.pos):
                     if self.update_decrees(): 
                         self.mask.active = True
-                elif self.day_button_rect.collidepoint(event.pos):
+                elif self.day_button_rect.collidepoint(event.pos) or self.city.rect.collidepoint(event.pos):
                     self.next_day()
                 elif self.bin.rect.collidepoint(event.pos):
                     self.do_delete()
@@ -355,7 +351,7 @@ class Game():
 
                 if self.game_over:
                     #self.end_menu_title = 'Hai Perso' if self.game_lost else 'Hai Vinto!'
-                    self.make_end_menu()
+                    self.make_end_menu(self.sick_ppls[-1])
                     self.menu = self.end_menu
                     self.game_over = False
                     self.game_lost = False
