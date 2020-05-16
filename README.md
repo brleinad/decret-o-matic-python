@@ -13,6 +13,8 @@ This work is licensed under a [Creative Commons Attribution-NonCommercial-NoDeri
 **Decret-o-matic** is a game where you must defend your country from a very contagious virus.
 Currently the game is only available in Italian but we have plans to have an english version as well. 
 
+This project is currently being ported to a web application with Javascript [here](https://github.com/brleinad/decret-o-matic-web).
+
 ![Gameplay](decretomatic/data/gameplay_screenshot.png)
 
 # Installing
